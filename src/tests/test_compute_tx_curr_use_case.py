@@ -1,9 +1,6 @@
-import sys
-sys.path.append('..')
-
 import unittest
 from pandas import Timestamp
-from main.application import ComputeTxCurrUseCase
+from src.main.application.service import ComputeTxCurrService
 
 class TestComputeTxCurrUseCase(unittest.TestCase):
 
@@ -13,7 +10,7 @@ class TestComputeTxCurrUseCase(unittest.TestCase):
     def test_compute_tx_curr_use_case(self):
         period= '2024-03-31'
 
-        tx_curr = ComputeTxCurrUseCase()
+        tx_curr = ComputeTxCurrService()
         tx_curr.compute(self.patients, period)
 
         for patient in self.patients:

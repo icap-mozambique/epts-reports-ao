@@ -1,0 +1,1 @@
+from .laboratory_adapter import LaboratoryAdapter
