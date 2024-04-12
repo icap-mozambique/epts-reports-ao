@@ -20,6 +20,4 @@ class ComputeTxNewService(ComputeTxNewUseCase):
 
                     if art_start_date >= start_period and art_start_date <= end_period:
                         patient['txNew'] = True
-                    else:
-                        patient['txNew'] = False
     

@@ -28,7 +28,7 @@ class PatientLaboratoryForm:
 
     def add_last_viral_load_date_of_the_period(self, patient, end_period):
 
-        viral_load = self.api.get('tracker/events', params={'orgUnit':self.org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.LAB_STAGE, 'trackedEntity':self.patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}','filter':'f{VIRAL_LOAD_RESULT_DATE}:LE:{end_period}', 'order':'f{VIRAL_LOAD_RESULT_DATE}:desc', 'pageSize':'1'})
+        viral_load = self.api.get('tracker/events', params={'orgUnit':self.org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.LAB_STAGE, 'trackedEntity':self.patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}','filter':f'{self.VIRAL_LOAD_RESULT_DATE}:LE:{end_period}', 'order':f'{self.VIRAL_LOAD_RESULT_DATE}:desc', 'pageSize':'1'})
         
         if viral_load.json()['instances']:
             

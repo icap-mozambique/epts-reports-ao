@@ -8,13 +8,11 @@ class ComputeTxCurrService(ComputeTxCurrUseCase):
                 for patient in patients:
                         if self.is_currently_on_art(patient, end_period):
                                 patient['txCurr'] = True
-                        else:
-                                patient['txCurr'] = False
-
+                                
     def is_currently_on_art(self, patient, end_period) -> bool:
             if 'nextPickupDate' in patient:
                     if 'artStartDate' in patient:
                         last_art_date = pd.to_datetime(patient['nextPickupDate']) + pd.Timedelta(days=self.DAYS_EXPECTED)
             
-                    if last_art_date >= pd.to_datetime(end_period) and 'dead' not in patient:
-                            return True
+                        if last_art_date >= pd.to_datetime(end_period) and 'dead' not in patient:
+                                return True

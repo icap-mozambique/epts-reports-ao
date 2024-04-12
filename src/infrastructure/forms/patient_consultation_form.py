@@ -13,14 +13,16 @@ class PatientConsultationForm:
 
     def add_first_consultation(self, patient):
         consultation = self.api.get('tracker/events', params={'orgUnit':self.org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.CONSULTATION_STAGE, 'trackedEntity':self.patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'order':f'{self.FIRST_CONSULTATION_ELEMENT_ID}:asc', 'pageSize':'1'})
-        
-        consultation = consultation.json()['instances'][0]
-        
-        for data in consultation['dataValues']:
-            # get first consultation date 
-            if data['dataElement'] == 'UydTSzRCUZe':
-                patient['firstConsultationDate'] = data['value']
+       
+        if consultation.json()['instances']:
+
+            consultation = consultation.json()['instances'][0]
             
-            # ART start date
-            if data['dataElement'] == 'QUgeSSXNzQB':
-                patient['artStartDate'] = data['value']
+            for data in consultation['dataValues']:
+                # get first consultation date 
+                if data['dataElement'] == 'UydTSzRCUZe':
+                    patient['firstConsultationDate'] = data['value']
+                
+                # ART start date
+                if data['dataElement'] == 'QUgeSSXNzQB':
+                    patient['artStartDate'] = data['value']

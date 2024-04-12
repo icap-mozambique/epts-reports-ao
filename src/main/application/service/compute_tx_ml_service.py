@@ -13,5 +13,3 @@ class ComputeTxMlService(ComputeTxMlUseCase):
 
                     if last_art_date >= start_date and last_art_date <= end_date:
                         patient['txML'] = True
-                    else:
-                         patient['txML'] = False

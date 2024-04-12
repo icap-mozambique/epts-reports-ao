@@ -28,5 +28,6 @@ class PatientPharmacyForm:
                 if data['dataElement'] == 'PWY0qgJN37G':
                     patient['pickupQuantity'] = data['value']
             
-            #calculate next pickupDate 
-            patient['nextPickupDate'] = pd.to_datetime(patient['lastPickupDate']) + pd.Timedelta(days=int(patient['pickupQuantity']))
+            #calculate next pickupDate
+            if 'lastPickupDate' in patient:
+                patient['nextPickupDate'] = pd.to_datetime(patient['lastPickupDate']) + pd.Timedelta(days=int(patient['pickupQuantity']))

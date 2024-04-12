@@ -17,12 +17,10 @@ class ComputeTxPvlsDenominatorService(ComputeTxPvlsDenominatorUseCase):
                 self.laboratory_port.add_last_viral_load_result_date_of_the_period(patient, end_period)
 
                 if 'viralLoadResultDate' in patient:
-                  art_start_date = pd.to_datetime(patient['artStartDate'])
-                  last_vl_date = pd.to_datetime(patient['viralLoadResultDate'])
+                    art_start_date = pd.to_datetime(patient['artStartDate'])
+                    last_vl_date = pd.to_datetime(patient['viralLoadResultDate'])
 
-                  days_between = (last_vl_date - art_start_date).days
+                    days_between = (last_vl_date - art_start_date).days
 
-                  if days_between >= self.DAYS_IN_ART:
-                      patient['txPvlsD'] = True
-                  else:
-                      patient['txPvlsD'] = False
+                    if days_between >= self.DAYS_IN_ART:
+                        patient['txPvlsD'] = True

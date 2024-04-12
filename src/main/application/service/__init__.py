@@ -2,3 +2,4 @@ from .compute_tx_curr_service import ComputeTxCurrService
 from .compute_tx_new_service import ComputeTxNewService
 from .compute_tx_ml_service import ComputeTxMlService
 from .compute_tx_pvls_denomitator_service import ComputeTxPvlsDenominatorService
+from .compute_tx_pvls_numerator_service import ComputeTxPvlsNumeratorService
