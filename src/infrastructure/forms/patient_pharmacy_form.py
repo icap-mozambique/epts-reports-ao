@@ -12,9 +12,9 @@ class PatientPharmacyForm:
         self.org_unit = org_unit
         self.api = api
 
-    def add_last_pharmacy(self, patient):
+    def add_last_pharmacy(self, patient, end_period):
       
-        last_pharmacy = self.api.get('tracker/events', params={'orgUnit':self.org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.PHARMACY_STAGE, 'trackedEntity':self.patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'order':f'{self.LAST_PICKUP_DATA_ELEMENT_ID}:desc', 'pageSize':'1'})
+        last_pharmacy = self.api.get('tracker/events', params={'orgUnit':self.org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.PHARMACY_STAGE, 'trackedEntity':self.patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'filter':f'{self.LAST_PICKUP_DATA_ELEMENT_ID}:LE:{end_period}', 'order':f'{self.LAST_PICKUP_DATA_ELEMENT_ID}:desc', 'pageSize':'1'})
 
         if last_pharmacy.json()['instances']:
             last_pharmacy = last_pharmacy.json()['instances'][0]
@@ -29,5 +29,5 @@ class PatientPharmacyForm:
                     patient['pickupQuantity'] = data['value']
             
             #calculate next pickupDate
-            if 'lastPickupDate' in patient:
+            if ('lastPickupDate' in patient and 'pickupQuantity' in patient):
                 patient['nextPickupDate'] = pd.to_datetime(patient['lastPickupDate']) + pd.Timedelta(days=int(patient['pickupQuantity']))

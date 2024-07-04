@@ -12,7 +12,7 @@ class TestComputeTxMlUseCase(unittest.TestCase):
         end_period = '2024-03-31'
 
         compute_tx_ml_service = ComputeTxMlService()
-        compute_tx_ml_service.compute(self.patients, start_period, end_period)
+        compute_tx_ml_service.compute(self.patients, start_period, end_period, ComputeTxMlService.QUARTERLY_DAYS_EXPECTED)
 
         for patient in self.patients:
             self.assertTrue(patient['txML'] == True)

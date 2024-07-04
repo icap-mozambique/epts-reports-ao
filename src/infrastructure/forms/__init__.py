@@ -4,3 +4,4 @@ from .patient_consultation_form import PatientConsultationForm
 from .patient_pharmacy_form import PatientPharmacyForm
 from .patient_laboratory_from import PatientLaboratoryForm
 from .patient_outcome_form import PatientOutcomeForm
+from .patient_event_form import PatientEventForm

@@ -1,1 +1,3 @@
 CARE_AND_TREATMENT = 'YKs1kXOLb0u'
+
+SAT = 'grpiGkcSlNN'

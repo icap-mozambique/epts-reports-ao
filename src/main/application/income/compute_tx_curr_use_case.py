@@ -6,9 +6,9 @@ class ComputeTxCurrUseCase(ABC):
         DAYS_EXPECTED = 27
 
         @abstractmethod
-        def compute(self, patients: list, end_period: pd.Timestamp):
+        def compute(self, patients: list, start_period: pd.Timestamp):
                 pass
 
         @abstractmethod
-        def is_currently_on_art(self, patient, end_period) -> bool:
+        def is_currently_on_art(self, patient, start_period) -> bool:
                 pass

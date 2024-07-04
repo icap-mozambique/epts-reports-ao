@@ -1,12 +1,14 @@
 class PatientDemographicForm:
 
-    def __init__(self, patient_id, org_unit, api) -> None:
-        self.patient_id = patient_id
-        self.org_unit = org_unit
+    def __init__(self, api) -> None:
         self.api = api
 
     def add_demographics(self, patient):
-        patient_demographic = self.api.get(f'tracker/trackedEntities/{self.patient_id}', params={'orgUnit':self.org_unit, 'trackedEntityType':'F3jh38FNCkP', 'skipPaging':'true','fields':'{,trackedEntity,trackedEntityType, attributes=[attribute, displayName,value]}'})
+        
+        patient_id = patient['trackedEntity']
+        org_unit = patient['orgUnit']
+
+        patient_demographic = self.api.get(f'tracker/trackedEntities/{patient_id}', params={'orgUnit':org_unit, 'trackedEntityType':'F3jh38FNCkP', 'skipPaging':'true','fields':'{,trackedEntity,trackedEntityType, attributes=[attribute, displayName,value]}'})
 
         patient_demographic = patient_demographic.json()
 

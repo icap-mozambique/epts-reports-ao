@@ -1,1 +1,5 @@
 from .laboratory_adapter import LaboratoryAdapter
+from .event_adapter import EventAdapter
+from .patient_demographics_adapter import PatientDemographicsAdapter
+from .vct_indicator_metadata_adapter import VctIndicatorMetadataAdapter
+from .pregnant_indicator_metadata_adapter import PregnantIndicatorMetadataAdapter

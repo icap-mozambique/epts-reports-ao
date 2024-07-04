@@ -1,1 +1,4 @@
 from .laboratory_port import LaboratoryPort
+from .event_port import EventPort
+from .patient_demographics_port import PatientDemographicsPort
+from .indicator_metadata_port import IndicatorMetadataPort
