@@ -52,7 +52,13 @@ class ComputeHtsPregnantLdService(ComputeHtsPregnantLdUseCase):
                 if 'result' not in patient_event:
                     continue
 
+                if 'cpn_type' not in patient_event:
+                    continue
+
                 if patient_event['result'] != 'POSITIVO' and patient_event['result'] != 'NEGATIVO':
+                    continue
+                
+                if patient_event['cpn_type'] != 'RETORNO':
                     continue
 
                 self.patient_demographics_port.add_patient_demographics(patient_event)

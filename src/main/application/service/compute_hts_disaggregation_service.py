@@ -10,7 +10,7 @@ class ComputeHtsDisaggregationService(ComputeHtsDisaggregationUseCase):
     logging.basicConfig(level=logging.WARNING,
                         format="%(asctime)s %(levelname)s %(message)s",
                         datefmt="%Y-%m-%d %H:%M:%S",
-                        filename="data/external/logs.log",
+                        filename="../data/external/logs.log",
                         )
     
     def __init__(self, indicator_metadata_port: IndicatorMetadataPort) -> None:

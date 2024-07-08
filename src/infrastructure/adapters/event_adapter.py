@@ -8,3 +8,6 @@ class EventAdapter(EventPort):
 
     def find_patient_events_by_program_unit_and_period(self, program, unit, start_date, end_date):
        return self.patient_event_form.find_patient_events_by_program_unit_and_period(program, unit, start_date, end_date)
+
+    def find_patient_events_by_program_program_stage_unit_and_period(self, program, program_stage, unit, start_date, end_date):
+       return self.patient_event_form.find_patient_events_by_program_program_stage_unit_and_period(program, program_stage, unit, start_date, end_date)
