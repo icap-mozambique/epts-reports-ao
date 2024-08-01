@@ -159,5 +159,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 data/external/credentials.json
+notebooks/*.csv
+notebooks/*.xlsx
 ../notebooks/.DS_Store
 .DS_Store

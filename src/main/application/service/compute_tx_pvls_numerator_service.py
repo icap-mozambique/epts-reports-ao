@@ -5,11 +5,17 @@ class ComputeTxPvlsNumeratorService(ComputeTxPvlsNumeratorUseCase):
 
     MAX_VIRAL_LOAD_SUPPPRESSED_VALUE = 999
 
-    def compute(self, patients):
+    def compute(self, tx_pvls_patients):
+        patients = []
+        
+        for patient in tx_pvls_patients:
+            
+            if str(patient['viralLoadResultValue']) == 'nan':
+                continue
+            
+            viral_load_result = int(float(patient['viralLoadResultValue']))
+            
+            if viral_load_result <= self.MAX_VIRAL_LOAD_SUPPPRESSED_VALUE:
+                patients.append(patient)
 
-        for patient in patients:
-            if 'txPvlsD' in patient and patient['txPvlsD'] == True:
-              viral_load_result = int(float(patient['viralLoadResultValue']))
-
-              if viral_load_result <= self.MAX_VIRAL_LOAD_SUPPPRESSED_VALUE:
-                  patient['txPvlsN'] = True
+        return patients

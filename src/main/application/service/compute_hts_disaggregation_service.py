@@ -47,13 +47,14 @@ class ComputeHtsDisaggregationService(ComputeHtsDisaggregationUseCase):
                             indicators[indicator_key]['value'] = indicators[indicator_key]['value'] + 1
                         else:
                             indicators[indicator_key] = {'indicator_key': indicator_key, 'value':1}                        
+                            
+                            metadata_indicator_id = metadatas[0]
+                            
+                            indicators[indicator_key]['dataElement'] = metadata_indicator_id['id'].split('.')[0]
+                            indicators[indicator_key]['categoryOptionCombo'] = metadata_indicator_id['id'].split('.')[1]
+                            indicators[indicator_key]['attributeOptionCombo'] = ''
+                            indicators[indicator_key]['orgUnit'] = patient['orgUnit']
 
-                        metadata_indicator_id = metadatas[0]
-                        
-                        indicators[indicator_key]['dataElement'] = metadata_indicator_id['id'].split('.')[0]
-                        indicators[indicator_key]['categoryOptionCombo'] = metadata_indicator_id['id'].split('.')[1]
-                        indicators[indicator_key]['attributeOptionCombo'] = ''
-                        indicators[indicator_key]['orgUnit'] = patient['orgUnit']
                         break
         
         indicators = list(indicators.values())

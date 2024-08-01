@@ -11,10 +11,9 @@ class TestComputeTxCurrUseCase(unittest.TestCase):
         period= '2024-03-31'
 
         tx_curr = ComputeTxCurrService()
-        tx_curr.compute(self.patients, period)
+        tx_curr_patients = tx_curr.compute(self.patients, period)
 
-        for patient in self.patients:
-            self.assertTrue(patient['txCurr'] == True)
+        self.assertEquals(len(tx_curr_patients), 1)
 
 if __name__ == '__main__':
     unittest.main()

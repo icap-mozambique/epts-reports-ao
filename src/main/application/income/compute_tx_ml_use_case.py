@@ -8,5 +8,5 @@ class ComputeTxMlUseCase(ABC):
     MONTHLY_DAYS_EXPECTED = 7
 
     @abstractmethod
-    def compute(self, patients, start_date, end_date, days):
+    def compute(self, enrolled_patients, start_date, end_date, days):
             pass

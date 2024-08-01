@@ -1,7 +1,6 @@
 from dhis2 import Api
-import pandas as pd
 
-from src.infrastructure.forms import PatientDemographicForm
+from src.infrastructure.forms.program import PTV
 
 class PatientEventForm:
 
@@ -47,7 +46,7 @@ class PatientEventForm:
                     continue
 
                 # TIPO de CPN
-                if data_value['dataElement'] == 'CTRi12gVID2':
+                if data_value['dataElement'] == 'A2KEZYwGcBm':
                     patient_event['cpn_type'] = data_value['value']
                     continue
 
@@ -118,3 +117,32 @@ class PatientEventForm:
                 unique_events.append(event)
 
         return unique_events
+    
+    def add_patient_first_anc_event(self, patient, anc_stage):
+       first_anc = self.api.get('tracker/events', params={'orgUnit':patient['orgUnit'], 'program':PTV, 'programStage':anc_stage, 'trackedEntity':patient['trackedEntity'], 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'order':'occurredAt:desc', 'pageSize':'1'})
+       first_anc = first_anc.json()['instances']
+
+       if len(first_anc) != 0:
+           data_values = first_anc[0]['dataValues']
+
+           for data_value in data_values:
+               
+               # ANC TYPE
+               if data_value['dataElement'] == 'A2KEZYwGcBm':
+                   patient['ancType'] =  data_value['value'] 
+
+               # ANC TEST RESULT
+               if data_value['dataElement'] == 'GhlV6KkqSrl':
+                   patient['testResult'] =  data_value['value'] 
+
+               # ANC ART START DATE
+               if data_value['dataElement'] == 'PPCZ7VP2D32':
+                   patient['artStartDate'] =  data_value['value'] 
+
+               # ANC ART STATUS
+               if data_value['dataElement'] == 'OiJQUObDjsY':
+                   patient['artStatus'] =  data_value['value'] 
+
+               # ANC ON ART
+               if data_value['dataElement'] == 'XzilEjpZy3g':
+                   patient['onArt'] =  data_value['value'] 
