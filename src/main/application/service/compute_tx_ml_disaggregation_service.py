@@ -93,6 +93,9 @@ class ComputeTxMlDisaggregationService(ComputeTxNewDisaggregationService):
         metadatas = [metadata_id for metadata_id in indicators_metadata if indicator_key == metadata_id['indicator_key']]
         metadata_indicator_id = metadatas[0]
 
+        # assure facility data 
+        indicator_key = indicator_key + '_' + patient['orgUnit']
+
         if indicator_key not in indicators:
             indicators[indicator_key] = {'indicator_key': indicator_key, 'value':1}
 

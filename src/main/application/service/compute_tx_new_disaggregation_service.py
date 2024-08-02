@@ -30,8 +30,10 @@ class ComputeTxNewDisaggregationService(ComputeTxNewDisaggregationUseCase):
 
                         # indicator_key pattern AGE_GENDER_cd4, e.i: 20-25_F_<200
                         indicator_key = age_band+'_'+gender[0]+'_'+cd4
-                        
                         metadatas = [metadata_id for metadata_id in indicators_metadata if indicator_key == metadata_id['indicator_key']]
+
+                        # assure facility data 
+                        indicator_key = indicator_key + '_' + patient['orgUnit']
                         
                         if indicator_key not in indicators:
                             indicators[indicator_key] = {'indicator_key': indicator_key, 'value':1}

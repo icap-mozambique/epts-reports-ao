@@ -33,6 +33,9 @@ class ComputeTxCurrDisaggregationService(ComputeTxCurrDisaggregationUseCase):
                         arv_indicator_key = arv_age_band + '_' + gender[0] + '_' + arv_dispense_quantity
                         arv_dispense_metadatas = [metadata_id for metadata_id in arv_dispense_indicators_metadata if arv_indicator_key == metadata_id['indicator_key']]
 
+                        # assure facility data 
+                        arv_indicator_key = arv_indicator_key + '_' + patient['orgUnit']
+
                         if arv_indicator_key not in indicators:
                             indicators[arv_indicator_key] = {'indicator_key': arv_indicator_key, 'value':1}
                             arv_dispense_metadata_indicator_id = arv_dispense_metadatas[0]
@@ -51,6 +54,9 @@ class ComputeTxCurrDisaggregationService(ComputeTxCurrDisaggregationUseCase):
 
                     indicator_key = age_band+'_'+gender[0]
                     tx_curr_metadatas = [metadata_id for metadata_id in tx_curr_indicators_metadata if indicator_key == metadata_id['indicator_key']]
+
+                    # assure facility data 
+                    indicator_key = indicator_key + '_' + patient['orgUnit']
                     
                     if indicator_key not in indicators:
                         indicators[indicator_key] = {'indicator_key': indicator_key, 'value':1}

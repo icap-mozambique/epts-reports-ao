@@ -125,9 +125,11 @@ class ComputeTxRttDisaggregationService(ComputeTxRttDisaggregationUseCase):
         return False
     
     def update_indicator_value(self, patient, indicators, indicators_metadata, indicator_key ):
-
         metadatas = [indicator_metadata for indicator_metadata in indicators_metadata if indicator_key == indicator_metadata['indicator_key']]
-                        
+
+        # assure facility indicator
+        indicator_key = indicator_key + '_' + patient['orgUnit']
+
         if indicator_key not in indicators:
             indicators[indicator_key] = {'indicator_key': indicator_key, 'value':1}
             metadata = metadatas[0]
