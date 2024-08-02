@@ -1,9 +1,9 @@
 import math
 import pandas as pd
-from src.main.application.service import ComputeTxNewDisaggregationService
+from src.main.application.income import ComputeTxMlDisaggregationUseCase
 from src.main.application.out.indicator_metadata_port import IndicatorMetadataPort
 
-class ComputeTxMlDisaggregationService(ComputeTxNewDisaggregationService):
+class ComputeTxMlDisaggregationService(ComputeTxMlDisaggregationUseCase):
 
     def __init__(self, tx_ml_indicator_metadata_port: IndicatorMetadataPort) -> None:
         self.tx_ml_indicator_metadata_port = tx_ml_indicator_metadata_port
@@ -26,27 +26,47 @@ class ComputeTxMlDisaggregationService(ComputeTxNewDisaggregationService):
 
                     if self.is_patient_dead(patient):
                         indicator_key = age_band+'_'+gender[0] +'_Died'
-                        self.update_indicator_value(patient, indicators, indicators_metadata, indicator_key)
+
+                        metadatas = [metadata_id for metadata_id in indicators_metadata if indicator_key == metadata_id['indicator_key']]
+                        indicator_key = indicator_key + '_' + patient['orgUnit']
+
+                        self.update_indicator_value(patient, indicators, metadatas, indicator_key)
                         continue
 
                     if self.patient_was_transferred_out(patient):
                         indicator_key = age_band+'_'+gender[0] +'_Transferred Out'
-                        self.update_indicator_value(patient, indicators, indicators_metadata, indicator_key)
+
+                        metadatas = [metadata_id for metadata_id in indicators_metadata if indicator_key == metadata_id['indicator_key']]
+                        indicator_key = indicator_key + '_' + patient['orgUnit']
+
+                        self.update_indicator_value(patient, indicators, metadatas, indicator_key)
                         continue
                     
                     if self.patient_in_treatment_less_than_3_months(patient):
-                        indicator_key = age_band+'_'+gender[0] +'_Lost to Follow-Up (<3 Months Treatment)'
-                        self.update_indicator_value(patient, indicators, indicators_metadata, indicator_key)
+                        indicator_key = age_band+'_'+gender[0] +'_Interruption in Treatment (<3 Months Treatment)'
+
+                        metadatas = [metadata_id for metadata_id in indicators_metadata if indicator_key == metadata_id['indicator_key']]
+                        indicator_key = indicator_key + '_' + patient['orgUnit']
+
+                        self.update_indicator_value(patient, indicators, metadatas, indicator_key)
                         continue
 
                     if self.patient_in_treatment_between_3_to_5_months(patient):
-                        indicator_key = age_band+'_'+gender[0] +'_Lost to Follow-Up (3-5 Months Treatment)'
-                        self.update_indicator_value(patient, indicators, indicators_metadata, indicator_key)
+                        indicator_key = age_band+'_'+gender[0] +'_Interruption in Treatment (3-5 Months Treatment)'
+
+                        metadatas = [metadata_id for metadata_id in indicators_metadata if indicator_key == metadata_id['indicator_key']]
+                        indicator_key = indicator_key + '_' + patient['orgUnit']
+
+                        self.update_indicator_value(patient, indicators, metadatas, indicator_key)
                         continue
 
                     if self.patient_in_treatment_for_more_than_6_months(patient):
-                        indicator_key = age_band+'_'+gender[0] +'_Lost to Follow-Up (6+ Months Treatment)'
-                        self.update_indicator_value(patient, indicators, indicators_metadata, indicator_key)
+                        indicator_key = age_band+'_'+gender[0] +'_Interruption In Treatment (6+ Months Treatment)'
+
+                        metadatas = [metadata_id for metadata_id in indicators_metadata if indicator_key == metadata_id['indicator_key']]
+                        indicator_key = indicator_key + '_' + patient['orgUnit']
+
+                        self.update_indicator_value(patient, indicators, metadatas, indicator_key)
                         continue
 
         indicators = list(indicators.values())
@@ -89,12 +109,8 @@ class ComputeTxMlDisaggregationService(ComputeTxNewDisaggregationService):
         
         return False
     
-    def update_indicator_value(self, patient, indicators, indicators_metadata, indicator_key):
-        metadatas = [metadata_id for metadata_id in indicators_metadata if indicator_key == metadata_id['indicator_key']]
+    def update_indicator_value(self, patient, indicators, metadatas, indicator_key):       
         metadata_indicator_id = metadatas[0]
-
-        # assure facility data 
-        indicator_key = indicator_key + '_' + patient['orgUnit']
 
         if indicator_key not in indicators:
             indicators[indicator_key] = {'indicator_key': indicator_key, 'value':1}

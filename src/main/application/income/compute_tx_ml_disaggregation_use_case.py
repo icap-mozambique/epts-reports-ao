@@ -8,7 +8,7 @@ class ComputeTxMlDisaggregationUseCase(ABC):
     
     SIXTY_FIVE_MORE = '65+'
 
-    OUTCOMES = ['Died','Lost to Follow-Up (<3 Months Treatment)', 'Lost to Follow-Up (3-5 Months Treatment)', 'Lost to Follow-Up (6+ Months Treatment)', 'Transferred Out', 'Refused (Stopped) Treatment'] 
+    OUTCOMES = ['Died','Interruption in Treatment (<3 Months Treatment)', 'Interruption in Treatment (3-5 Months Treatment)', 'Interruption In Treatment (6+ Months Treatment)', 'Transferred Out', 'Refused (Stopped) Treatment'] 
 
     @abstractmethod
     def compute(self, patients, end_period):

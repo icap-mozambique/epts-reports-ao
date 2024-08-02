@@ -1,6 +1,6 @@
 from dhis2 import Api
 
-from src.infrastructure.forms.program import PTV, PTV_STAGE, TB, TB_STAGE
+from src.infrastructure.forms.program import DPI, DPI_STAGE, PTV, PTV_STAGE, TB, TB_STAGE
 
 class PatientEventForm:
 
@@ -175,3 +175,28 @@ class PatientEventForm:
                # TB ART STATUS
                if data_value['dataElement'] == 'PaB03WOer8w':
                    patient['artStatus'] =  data_value['value'] 
+
+    def add_patient_last_dpi_event(self, patient):
+       last_dpi = self.api.get('tracker/events', params={'orgUnit':patient['orgUnit'], 'program':DPI, 'programStage':DPI_STAGE, 'trackedEntity':patient['trackedEntity'], 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'order':'occurredAt:desc', 'pageSize':'1'})
+       last_dpi = last_dpi.json()['instances']
+
+       if len(last_dpi) != 0:
+           data_values = last_dpi[0]['dataValues']
+
+           for data_value in data_values:
+               
+               # DPI CHILD EXPOSED
+               if data_value['dataElement'] == 'MGIuReFLpqs':
+                   patient['exposed'] =  data_value['value'] 
+
+               # DPI PCR NUMBER
+               if data_value['dataElement'] == 'ibcg89iMWHN':
+                   patient['pcrNumber'] =  data_value['value'] 
+
+               # DPI PCR RESULT
+               if data_value['dataElement'] == 'RTgqf4cyKpK':
+                   patient['testResult'] =  data_value['value'] 
+
+               # DPI ART START DATE
+               if data_value['dataElement'] == 'F8UJoKnqf9k':
+                   patient['artStartDate'] =  data_value['value']

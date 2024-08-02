@@ -1,4 +1,7 @@
 
+import json
+from logging import Logger
+from dhis2 import RequestException
 from src.infrastructure.forms import CARE_AND_TREATMENT
 
 class PatientLaboratoryForm:
@@ -12,7 +15,8 @@ class PatientLaboratoryForm:
         self.org_unit = org_unit
         self.api = api
 
-    def __init__(self, api) -> None:
+    def __init__(self, logger: Logger ,api) -> None:
+        self.logger = logger
         self.api = api
 
     def add_laboratory(self, patient):
@@ -33,8 +37,14 @@ class PatientLaboratoryForm:
 
         patient_id = patient['trackedEntity']
         org_unit = patient['orgUnit']
-
-        viral_load = self.api.get('tracker/events', params={'orgUnit':org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.LAB_STAGE, 'trackedEntity':patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}','filter':f'{self.VIRAL_LOAD_RESULT_DATE}:LE:{end_period}', 'order':f'{self.VIRAL_LOAD_RESULT_DATE}:desc', 'pageSize':'1'})
+        
+        try:
+            viral_load = self.api.get('tracker/events', params={'orgUnit':org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.LAB_STAGE, 'trackedEntity':patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}','filter':f'{self.VIRAL_LOAD_RESULT_DATE}:LE:{end_period}', 'order':f'{self.VIRAL_LOAD_RESULT_DATE}:desc', 'pageSize':'1'})
+        except RequestException as e:
+            description = json.loads(e.description)
+            message = description['message']
+            self.logger.warning(f"The patient: {patient['trackedEntity']} - {patient['patientIdentifier']} - {patient['patientName']} - {patient['patientSex']} of facility {patient['orgUnit']} was not processed. {message}")
+            return
         
         if viral_load.json()['instances']:
             

@@ -28,15 +28,26 @@ class ComputeTxPvlsDenominatorDisaggregationService(ComputeTxPlvsDenominatorDisa
                         continue
 
                     indicator_key = age_band+'_'+gender[0]
-                    self.update_indicator_value(patient, indicators, tx_pvls_denominator_indicator_metadata, indicator_key)
+                    
+                    metadatas = [metadata_id for metadata_id in tx_pvls_denominator_indicator_metadata if indicator_key == metadata_id['indicator_key']]
+                    indicator_key = indicator_key + '_' + patient['orgUnit']
+
+                    self.update_indicator_value(patient, indicators, metadatas, indicator_key)
 
                     if self.pregnant(patient):
                         indicator_key = 'pregnant'
-                        self.update_indicator_value(patient, indicators, tx_pvls_denominator_preg_breast_inidcator_metadata, indicator_key)
+
+                        metadatas = [metadata_id for metadata_id in tx_pvls_denominator_preg_breast_inidcator_metadata if indicator_key == metadata_id['indicator_key']]
+                        indicator_key = indicator_key + '_' + patient['orgUnit']
+
+                        self.update_indicator_value(patient, indicators, metadatas, indicator_key)
 
                     if self.breastfeeding(patient):
                         indicator_key = 'breastfeeding'
-                        self.update_indicator_value(patient, indicators, tx_pvls_denominator_preg_breast_inidcator_metadata, indicator_key)
+                        metadatas = [metadata_id for metadata_id in tx_pvls_denominator_preg_breast_inidcator_metadata if indicator_key == metadata_id['indicator_key']]
+                        indicator_key = indicator_key + '_' + patient['orgUnit']
+
+                        self.update_indicator_value(patient, indicators, metadatas, indicator_key)
                     
                     break
         
@@ -73,12 +84,8 @@ class ComputeTxPvlsDenominatorDisaggregationService(ComputeTxPlvsDenominatorDisa
         return False
     
 
-    def update_indicator_value(self, patient, indicators, indicators_metadata, indicator_key):
-        metadatas = [metadata_id for metadata_id in indicators_metadata if indicator_key == metadata_id['indicator_key']]
+    def update_indicator_value(self, patient, indicators, metadatas, indicator_key):
         metadata_indicator_id = metadatas[0]
-
-        # assure facility indicator
-        indicator_key = indicator_key + '_' + patient['orgUnit']
 
         if indicator_key not in indicators:
             indicators[indicator_key] = {'indicator_key': indicator_key, 'value':1}

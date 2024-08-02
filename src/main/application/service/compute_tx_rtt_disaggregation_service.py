@@ -40,7 +40,9 @@ class ComputeTxRttDisaggregationService(ComputeTxRttDisaggregationUseCase):
 
                         # the indicator pattern e.g: 5-9_F_>=200 CD4
                         indicator_key = age_band + '_' + gender[0] + '_' + cd4
-                        self.update_indicator_value(patient, indicators, tx_rtt_indicators_metadata, indicator_key)
+                        metadatas = [indicator_metadata for indicator_metadata in tx_rtt_indicators_metadata if indicator_key == indicator_metadata['indicator_key']]
+                        indicator_key = indicator_key + '_' + patient['orgUnit']
+                        self.update_indicator_value(patient, indicators, metadatas, indicator_key)
 
                         if 'priorLastArtDate' in patient:
                             number_of_itt_days = (pd.to_datetime(patient['lastPickupDate']) - pd.to_datetime(patient['priorLastArtDate'])).days
@@ -49,20 +51,26 @@ class ComputeTxRttDisaggregationService(ComputeTxRttDisaggregationUseCase):
 
                         # ITT less than 3 months
                         if number_of_itt_days < self.THREE_MONTHS:
-                            indicator_key = 'Lost to Follow-Up (<3 Months Treatment)'
-                            self.update_indicator_value(patient, indicators, tx_rtt_iit_indicators_metadata, indicator_key)
+                            indicator_key = 'Interruption in Treatment (<3 Months Treatment)'
+                            metadatas = [indicator_metadata for indicator_metadata in tx_rtt_iit_indicators_metadata if indicator_key == indicator_metadata['indicator_key']]
+                            indicator_key = indicator_key + '_' + patient['orgUnit']
+                            self.update_indicator_value(patient, indicators, metadatas, indicator_key)
                             break
 
                         # ITT between 3 to 5 months
                         if number_of_itt_days >= self.THREE_MONTHS and number_of_itt_days <= self.FIVE_MONTHS:
                             indicator_key = 'Interruption in Treatment (3-5 Months Treatment)'
-                            self.update_indicator_value(patient, indicators, tx_rtt_iit_indicators_metadata, indicator_key)
+                            metadatas = [indicator_metadata for indicator_metadata in tx_rtt_iit_indicators_metadata if indicator_key == indicator_metadata['indicator_key']]
+                            indicator_key = indicator_key + '_' + patient['orgUnit']
+                            self.update_indicator_value(patient, indicators, metadatas, indicator_key)
                             break
                         
                         # ITT between 3 to 5 months
                         if number_of_itt_days >= self.SIX_MONTHS:
                             indicator_key = 'Interruption In Treatment (6+ Months Treatment)'
-                            self.update_indicator_value(patient, indicators, tx_rtt_iit_indicators_metadata, indicator_key)
+                            metadatas = [indicator_metadata for indicator_metadata in tx_rtt_iit_indicators_metadata if indicator_key == indicator_metadata['indicator_key']]
+                            indicator_key = indicator_key + '_' + patient['orgUnit']
+                            self.update_indicator_value(patient, indicators, metadatas, indicator_key)
                             break
         
         indicators = list(indicators.values())
@@ -124,20 +132,15 @@ class ComputeTxRttDisaggregationService(ComputeTxRttDisaggregationUseCase):
         
         return False
     
-    def update_indicator_value(self, patient, indicators, indicators_metadata, indicator_key ):
-        metadatas = [indicator_metadata for indicator_metadata in indicators_metadata if indicator_key == indicator_metadata['indicator_key']]
-
-        # assure facility indicator
-        indicator_key = indicator_key + '_' + patient['orgUnit']
+    def update_indicator_value(self, patient, indicators, metadatas, indicator_key ):
+        metadata = metadatas[0]
 
         if indicator_key not in indicators:
             indicators[indicator_key] = {'indicator_key': indicator_key, 'value':1}
-            metadata = metadatas[0]
         
             indicators[indicator_key]['dataElement'] = metadata['id'].split('.')[0]
             indicators[indicator_key]['categoryOptionCombo'] = metadata['id'].split('.')[1]
             indicators[indicator_key]['attributeOptionCombo'] = ''
             indicators[indicator_key]['orgUnit'] = patient['orgUnit']
-
         else:
             indicators[indicator_key]['value'] = indicators[indicator_key]['value'] + 1
