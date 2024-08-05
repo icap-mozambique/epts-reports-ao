@@ -102,6 +102,21 @@ class PatientEventForm:
                     patient_event['patientSex'] = data_value['value']
                     continue
 
+                # INDEX CASE ACCEPTED TEST CHILDREN LESS THAN 15 YEARS
+                if data_value['dataElement'] == 't63nrRfyPif':
+                    patient_event['childrenLessThan15Years'] = data_value['value']
+                    continue
+
+                # INDEX CASE ACCEPTED TEST PARTNER
+                if data_value['dataElement'] == 'ZeqMAFjVGul':
+                    patient_event['testPartner'] = data_value['value']
+                    continue
+
+                # INDEX CASE NUMBER OF CONTACTS
+                if data_value['dataElement'] == 'sKIsOK1xrJK':
+                    patient_event['numberOfContacts'] = data_value['value']
+                    continue
+
             del patient_event['dataValues']
 
         return patient_events
