@@ -137,7 +137,7 @@ class ComputeTxCurrDisaggregationService(ComputeTxCurrDisaggregationUseCase):
         if arv_dispense_quantity == 'Less than 3 months' and quantity < 90:
             return True
         
-        if arv_dispense_quantity == '3 to 5 months' and (quantity >= 90 and quantity <= 150):
+        if arv_dispense_quantity == '3 to 5 months' and (quantity >= 90 and quantity <= 179):
             return True
         
         if arv_dispense_quantity == '6 or more months' and quantity >= 180:

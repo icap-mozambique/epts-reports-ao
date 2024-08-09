@@ -10,18 +10,16 @@ class PatientLaboratoryForm:
 
     VIRAL_LOAD_RESULT_DATE = 'zY8C9WSkt4n'
 
-    def __init__(self, patient_id, org_unit, api) -> None:
-        self.patient_id = patient_id
-        self.org_unit = org_unit
-        self.api = api
-
     def __init__(self, logger: Logger ,api) -> None:
         self.logger = logger
         self.api = api
 
     def add_laboratory(self, patient):
+
+        patient_id = patient['trackedEntity']
+        org_unit = patient['orgUnit']
         
-        last_lab = self.api.get('tracker/events', params={'orgUnit':self.org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.LAB_STAGE, 'trackedEntity':self.patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'order':'occurredAt:desc', 'pageSize':'1'})
+        last_lab = self.api.get('tracker/events', params={'orgUnit':org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.LAB_STAGE, 'trackedEntity':patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'order':'occurredAt:desc', 'pageSize':'1'})
         
         if last_lab.json()['instances']:
             

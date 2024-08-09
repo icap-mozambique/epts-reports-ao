@@ -131,7 +131,7 @@ class ComputeTxMlDisaggregationService(ComputeTxMlDisaggregationUseCase):
 
         days = (next_pick_up_date - art_start_date).days
 
-        return days < 90
+        return days < self.THREE_MONTHS
     
     def patient_in_treatment_between_3_to_5_months(self, patient):
         if str(patient['nextPickupDate']) == 'nan':
@@ -142,7 +142,7 @@ class ComputeTxMlDisaggregationService(ComputeTxMlDisaggregationUseCase):
 
         days = (next_pick_up_date - art_start_date).days
 
-        return days >= 90 and days <= 150
+        return days >= self.THREE_MONTHS and days <= self.FIVE_MONTHS
     
     def patient_in_treatment_for_more_than_6_months(self, patient):
         if str(patient['nextPickupDate']) == 'nan':
@@ -153,7 +153,7 @@ class ComputeTxMlDisaggregationService(ComputeTxMlDisaggregationUseCase):
 
         days = (next_pick_up_date - art_start_date).days
 
-        return days >= 180
+        return days >= self.SIX_MONTHS
     
     def patient_was_transferred_out(self, patient):
         if str(patient['transferedOut']) == 'nan':

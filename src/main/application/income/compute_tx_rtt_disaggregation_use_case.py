@@ -14,7 +14,7 @@ class ComputeTxRttDisaggregationUseCase(ABC):
 
     THREE_MONTHS = 90
 
-    FIVE_MONTHS = 150
+    FIVE_MONTHS = 179
 
     SIX_MONTHS = 180
 

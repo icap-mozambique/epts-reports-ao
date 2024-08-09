@@ -5,14 +5,14 @@ class PatientOutcomeForm:
     
     FINAL_OUTCOME_STAGE = 'LsiTuPWVsOC'
 
-    def __init__(self, patient_id, org_unit, api) -> None:
-        self.patient_id = patient_id
-        self.org_unit = org_unit
+    def __init__(self, api) -> None:
         self.api = api
 
     def add_final_outcome(self, patient):
+        patient_id = patient['trackedEntity']
+        org_unit = patient['orgUnit']
    
-        final_outcome = self.api.get('tracker/events', params={'skipPaging':'true','orgUnit':self.org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.FINAL_OUTCOME_STAGE, 'trackedEntity':self.patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}'})
+        final_outcome = self.api.get('tracker/events', params={'skipPaging':'true','orgUnit':org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.FINAL_OUTCOME_STAGE, 'trackedEntity':patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}'})
 
         if final_outcome.json()['instances']:
 

@@ -2,6 +2,7 @@ from dhis2 import Api
 from src.main.application.out import IndicatorMetadataPort
 
 class BreastfeedingIndicatorMetadataAdapter(IndicatorMetadataPort):
+    
     METADATA_ID = 'Ui7qaC8QfRI'
     
     AGE_BANDS = ['<10', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50+']

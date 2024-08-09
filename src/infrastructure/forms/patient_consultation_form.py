@@ -9,16 +9,14 @@ class PatientConsultationForm:
 
     LAST_CONSULTATION_DATE = 'pF0rp5jbCU8'
 
-    def __init__(self, patient_id, org_unit, api) -> None:
-        self.patient_id = patient_id
-        self.org_unit = org_unit
-        self.api = api
-
     def __init__(self, api) -> None:
         self.api = api
 
     def add_first_consultation(self, patient):
-        consultation = self.api.get('tracker/events', params={'orgUnit':self.org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.CONSULTATION_STAGE, 'trackedEntity':self.patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'order':f'{self.FIRST_CONSULTATION_ELEMENT_ID}:asc', 'pageSize':'1'})
+        org_unit = patient['orgUnit']
+        patient_id = patient['trackedEntity']
+
+        consultation = self.api.get('tracker/events', params={'orgUnit':org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.CONSULTATION_STAGE, 'trackedEntity':patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'order':f'{self.FIRST_CONSULTATION_ELEMENT_ID}:asc', 'pageSize':'1'})
        
         if consultation.json()['instances']:
 
@@ -32,6 +30,7 @@ class PatientConsultationForm:
                 # ART start date
                 if data['dataElement'] == 'QUgeSSXNzQB':
                     patient['artStartDate'] = data['value']
+
 
     def add_patient_pregnant_or_breastfeeding_status(self, patient, end_period):
         org_unit = patient['orgUnit']
