@@ -60,6 +60,16 @@ class PatientEventForm:
                     patient_event['result'] = data_value['value']
                     continue
 
+                # HTS outcome
+                if data_value['dataElement'] == 'vaHms7ZL1Q7':
+                    patient_event['outcome'] = data_value['value']
+                    continue
+
+                # CPN outcome
+                if data_value['dataElement'] == 'fZfoDVLfS0l':
+                    patient_event['outcome'] = data_value['value']
+                    continue
+
             del patient_event['dataValues']
 
         return patient_events

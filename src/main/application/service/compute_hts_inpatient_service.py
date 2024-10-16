@@ -36,9 +36,13 @@ class ComputeHtsInpatientService(ComputeHtsInpatientUseCase):
             if patient_event['section'] != 'INTERNAMENTO_MEDICINA':
                 continue
 
-            self.patient_demographics_port.add_patient_demographics(patient_event)
-
-            patients.append(patient_event)
+            if patient_event['result'] == 'POSITIVO':
+                if patient_event['outcome'] == 'SEGUIMENTO_NESTA_US' or patient_event['outcome'] == 'SEGUIMENTO_NOUTRA_US' or patient_event['outcome'] == 'OBITO':
+                    self.patient_demographics_port.add_patient_demographics(patient_event)
+                    patients.append(patient_event)
+            else:
+                self.patient_demographics_port.add_patient_demographics(patient_event)
+                patients.append(patient_event)
 
         return patients
 

@@ -37,6 +37,10 @@ class ComputeHtsVctService(ComputeHtsVctUseCase):
             if patient_event['section'] != 'AT':
                 continue
 
+            if patient_event['result'] == 'POSITIVO' and (patient_event['outcome'] ==  '' or patient_event['outcome'] == ''):
+                    continue
+
+
             self.patient_demographics_port.add_patient_demographics(patient_event)
 
             patients.append(patient_event)
