@@ -51,6 +51,9 @@ class ComputeTxPvlsNumeratorDisaggregationService(ComputeTxPlvsNumeratorDisaggre
         return indicators
 
     def match_gender(self,patient, gender):
+        if str(patient['patientSex']) == 'nan':
+            return False
+        
         if patient['patientSex'][0] == gender[0]:
             return True
         

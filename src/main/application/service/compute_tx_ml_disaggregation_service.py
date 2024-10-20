@@ -95,6 +95,9 @@ class ComputeTxMlDisaggregationService(ComputeTxMlDisaggregationUseCase):
         return False
     
     def gender_match(self, patient, gender):
+        if str(patient['patientSex']) == 'nan':
+            return False
+        
         if patient['patientSex'][0] == gender[0]:
             return True
         

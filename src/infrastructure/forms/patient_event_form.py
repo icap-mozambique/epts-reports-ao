@@ -112,6 +112,16 @@ class PatientEventForm:
                     patient_event['patientSex'] = data_value['value']
                     continue
 
+                # INDEX CASE TESTING LOCATION
+                if data_value['dataElement'] == 'o81crJ9IIwm':
+                    patient_event['testingLocation'] = data_value['value']
+                    continue
+
+                # INDEX CASE OUTCOME
+                if data_value['dataElement'] == 'SEBqzQmxYz0':
+                    patient_event['outcome'] = data_value['value']
+                    continue
+
                 # INDEX CASE ACCEPTED TEST CHILDREN LESS THAN 15 YEARS
                 if data_value['dataElement'] == 't63nrRfyPif':
                     patient_event['childrenLessThan15Years'] = data_value['value']

@@ -52,9 +52,15 @@ class ComputeHtsIndexCaseContactsNumberDisaggregationService(ComputeHtsIndexCase
        return indicators
     
     def match_gender(self, patient, gender):
+        if str(patient['patientSex']) == 'nan':
+            return False
+        
         return patient['patientSex'][0] == gender[0]
 
     def match_age_band(self, patient, age_band, end_period):
+        if str(patient['patientAge']) == 'nan':
+            return False
+        
         end_period = pd.to_datetime(end_period)
         
         try:

@@ -37,13 +37,13 @@ class ComputeHtsOtherPitcService(ComputeHtsOtherPitcUseCase):
                 continue
 
             if patient_event['result'] == 'POSITIVO':
-                if patient_event['outcome'] == 'SEGUIMENTO_NESTA_US' or patient_event['outcome'] == 'SEGUIMENTO_NOUTRA_US' or patient_event['outcome'] == 'OBITO':
+                if 'outcome' in patient_event and (patient_event['outcome'] == 'SEGUIMENTO_NESTA_US' or patient_event['outcome'] == 'SEGUIMENTO_NOUTRA_US' or patient_event['outcome'] == 'OBITO'):
                     self.patient_demographics_port.add_patient_demographics(patient_event)
                     patients.append(patient_event)
             else:
                 self.patient_demographics_port.add_patient_demographics(patient_event)
                 patients.append(patient_event)
-                
+
         return patients
        
 

@@ -163,3 +163,5 @@ notebooks/*.csv
 notebooks/*.xlsx
 ../notebooks/.DS_Store
 .DS_Store
+
+.vscode/
