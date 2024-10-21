@@ -34,10 +34,10 @@ from src.main.application.service import ComputeTxCurrService
 
 class TxResource:
 
-    def __init__(self, api, logger, start_period, end_period, period):
+    def __init__(self, api, logger, start_period, end_period, period, org_units):
         self.logger = logger
         self.api = api
-        self.org_units = self.api.get('organisationUnitGroups/gH2DlwAo1ja', params={'fields':'organisationUnits[id, name]'}).json()['organisationUnits']
+        self.org_units = org_units
         self.start_period = start_period
         self.end_period = end_period
         self.period = period
