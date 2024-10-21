@@ -156,7 +156,7 @@ class PmtctResource:
             indicators = indicators.sort_values(['orgUnit', 'dataElement', 'period'])
             indicators.to_csv('PMTCT_DATA.csv', index=False)
     
-    
+
     def run(self):
         self.extract_pmtct_enrollments()
         self.logger.info('PMTCT_ENROLLMENTS.csv file is completed.')
@@ -166,5 +166,3 @@ class PmtctResource:
 
         self.process_pmtct_indicators()
         self.logger.info('PMTCT_DATA.csv file is completed.')
-
-
