@@ -81,5 +81,5 @@ class TbResource:
         self.extract_tb_enrollments()
         self.logger.info('The TB_ENROLLMENTS.csv file is completed.')
 
-        self.process_tb_indicators(self)
+        self.process_tb_indicators()
         self.logger.info('The TB_DATA.csv is completed.')
