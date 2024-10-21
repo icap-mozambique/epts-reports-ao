@@ -116,18 +116,21 @@ class PmtctResource:
         pmtct_art_numerator_indicator_metadata_port = PmtctArtNumeratorIndicatorMetadataAdapter(self.api)
         pmtct_art_numerator_disaggegation_service = ComputePmtctArtNumeratorDisaggregationService(self.logger, pmtct_art_numerator_indicator_metadata_port)
         pmtct_art_numerator_patients_disaggregation = pmtct_art_numerator_disaggegation_service.compute(pmtct_art_numerator_patients, self.end_period)
+        self.logger.info('PMTCT_ART completed!')
 
         pmtct_stat_denominator_service = ComputePmtctStatDenominatorService()
         pmtct_stat_denominator_patients = pmtct_stat_denominator_service.compute(enrollments)
         pmtct_stat_denominator_indicator_metadata_port = PmtctStatDenominatorIndicatorMetadataAdapter(self.api)
         pmtct_stat_denominator_disaggregation_service = ComputePmtctStatDenominatorDisaggregationService(self.logger, pmtct_stat_denominator_indicator_metadata_port)
         pmtct_stat_denominator_patients_disaggregation = pmtct_stat_denominator_disaggregation_service.compute(pmtct_stat_denominator_patients, self.end_period)
+        self.logger.info('PMTCT_STAT_DENOMINATOR completed!')
 
         pmtct_stat_numerator_service = ComputePmtctStatNumeratorService()
         pmtct_stat_numerator_patients = pmtct_stat_numerator_service.compute(enrollments)
         pmtct_stat_numerator_indicator_metadata_port = PmtctStatNumeratorIndicatorMetadataAdapter(self.api)
         pmtct_stat_numerator_disaggregation_service = ComputePmtctStatNumeratorDisaggregationService(self.logger, pmtct_stat_numerator_indicator_metadata_port)
         pmtct_stat_numerator_patients_disaggregation = pmtct_stat_numerator_disaggregation_service.compute(pmtct_stat_numerator_patients, self.end_period)
+        self.logger.info('PMTCT_STAT_NUMERATOR completed!')
 
         dpi_enrollments = pd.read_csv('DPI_ENROLLMENTS.csv')
         dpi_enrollments = dpi_enrollments.to_dict(orient='records')
@@ -137,12 +140,14 @@ class PmtctResource:
         pmtct_eid_indicators_metadata_port: IndicatorMetadataPort = PmtctEidIndicatorMedatadaAdapter(self.api)
         pmtct_eid_use_case: ComputePmtctEidDisaggregationUseCase = ComputePmtctEidDisaggregationService(self.logger, pmtct_eid_indicators_metadata_port)
         pmtct_eid_patients_disaggregation = pmtct_eid_use_case.compute(pmtct_eid_patients, self.end_period)
+        self.logger.info('PMTCT_STAT_EID completed!')
 
         pmtct_hei_use_case: ComputePmtctHeiUseCase = ComputePmtctHeiService()
         pmtct_hei_patients = pmtct_hei_use_case.compute(dpi_enrollments)
         pmtct_hei_indicators_metadata_port: IndicatorMetadataPort = PmtctHeiIndicatorsMetadataAdapter(self.api)
         pmtct_hei_pos_indicators_metadata_port: IndicatorMetadataPort = PmtctHeiPosIndicatorsMetadataAdapter(self.api)
-
+        self.logger.info('PMTCT_STAT_POS completed!')
+        
         pmtct_hei_disaggregation_use_case: ComputePmtctHeiDisaggregationUseCase = ComputePmtctHeiDisaggregationService(self.logger, pmtct_hei_indicators_metadata_port, pmtct_hei_pos_indicators_metadata_port)
         pmtct_hei_patients_disaggregation = pmtct_hei_disaggregation_use_case.compute(pmtct_hei_patients, self.end_period)
 
