@@ -1,6 +1,8 @@
+import os
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from dhis2 import Api
+from fastapi.responses import FileResponse
 
 from integ.resources import HtsIndexResource
 from integ.resources import HtsResource
@@ -88,6 +90,38 @@ async def hts_data():
 
     hts_index_resource = HtsIndexResource(api, logger, start_period, end_period, period, org_units)
     return hts_index_resource.run()
+
+@app.get('/download/{code}')
+def download(code: str):
+    if code == 'TX':
+        if not os.path.exists('TX_DATA.csv'):
+            raise HTTPException(status_code=404, detail="File not available yet. Try again later.")
+        else:
+            return FileResponse(path="TX_DATA.csv",filename="TX_DATA.csv", media_type="text/csv")
+        
+    if code == 'TB':
+        if not os.path.exists('TB_DATA.csv'):
+            raise HTTPException(status_code=404, detail="File not available yet. Try again later.")
+        else:
+            return FileResponse(path="TB_DATA.csv",filename="TB_DATA.csv", media_type="text/csv")
+    
+    if code == 'PMTCT':
+        if not os.path.exists('PMTCT_DATA.csv'):
+             raise HTTPException(status_code=404, detail="File not available yet. Try again later.")
+        else:
+            return FileResponse(path="PMTCT_DATA.csv",filename="PMTCT_DATA.csv", media_type="text/csv")
+    
+    if code == 'HTS':
+        if not os.path.exists('HTS_DATA.csv'):
+            raise HTTPException(status_code=404, detail="File not available yet. Try again later.")
+        else:
+            return FileResponse(path="HTS_DATA.csv",filename="HTS_DATA.csv", media_type="text/csv")
+    
+    if code == 'INDEX':
+        if not os.path.exists('INDEX_DATA.csv'):
+            raise HTTPException(status_code=404, detail="File not available yet. Try again later.")
+        else:
+            return FileResponse(path="INDEX_DATA.csv",filename="INDEX_DATA.csv", media_type="text/csv")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
