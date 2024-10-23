@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 from dhis2 import Api
 from fastapi.responses import FileResponse
 
+from integ.resources import TbPrevResource
 from integ.resources import HtsIndexResource
 from integ.resources import HtsResource
 from integ.resources import PmtctResource
@@ -91,6 +92,18 @@ async def hts_data():
     hts_index_resource = HtsIndexResource(api, logger, start_period, end_period, period, org_units)
     return hts_index_resource.run()
 
+@app.get('/tb-prev-data')
+async def tb_prev_data():
+    api = api = Api(url, username, password)
+    org_units = api.get(f'organisationUnitGroups/{units_group}', params={'fields':'organisationUnits[id, name]'}).json()['organisationUnits']
+    
+    config = FileUtil.load_logging_config()
+    logging_config = LoggingConfig(config)
+    logger = logging_config.logging_setup()
+
+    tb_prev_resource = TbPrevResource(api, logger, start_period, end_period, period, org_units)
+    return tb_prev_resource.run()
+
 @app.get('/download/{code}')
 def download(code: str):
     if code == 'TX':
@@ -104,6 +117,12 @@ def download(code: str):
             raise HTTPException(status_code=404, detail="File not available yet. Try again later.")
         else:
             return FileResponse(path="TB_DATA.csv",filename="TB_DATA.csv", media_type="text/csv")
+        
+    if code == 'TB_PREV':
+        if not os.path.exists('TB_PREV_DATA.csv'):
+            raise HTTPException(status_code=404, detail="File not available yet. Try again later.")
+        else:
+            return FileResponse(path="TB_PREV_DATA.csv",filename="TB_PREV_DATA.csv", media_type="text/csv")
     
     if code == 'PMTCT':
         if not os.path.exists('PMTCT_DATA.csv'):
@@ -122,6 +141,8 @@ def download(code: str):
             raise HTTPException(status_code=404, detail="File not available yet. Try again later.")
         else:
             return FileResponse(path="INDEX_DATA.csv",filename="INDEX_DATA.csv", media_type="text/csv")
+    
+    raise HTTPException(status_code=404, detail="File code is invalid.")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

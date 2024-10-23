@@ -1,13 +1,13 @@
-from dhis2 import Api
-from src.main.application.out.indicator_metadata_port import IndicatorMetadataPort
+from src.main.application.out import IndicatorMetadataPort
 
-class ArvDispenseIndicatorMetadataAdapter(IndicatorMetadataPort):
 
-    METADATA_ID = 'Lz3yNLFlNx4'
+class TbPrevNumeratorIndicatorMetadataAdapter(IndicatorMetadataPort):
+
+    METADATA_ID = 'N6fw6CjSHSc'
 
     AGE_BANDS = ['<15', '15+']
-    
-    def __init__(self, api:Api) -> None:
+
+    def __init__(self, api):
         self.api = api
 
     def find_indicator_metadata(self):
@@ -17,10 +17,10 @@ class ArvDispenseIndicatorMetadataAdapter(IndicatorMetadataPort):
         for indicator_metadata in indicators_metadata:
             name = indicator_metadata['name']
             name = name.replace('MER_', '')
-            name = name.split('TX_CURR (N, TA, Age/Sex/ARVDispense/HIVStatus): Receiving ART ')[1]
+            name = name.split('TB_PREV (N, TA, Age/Sex/NewExistingArt/HIVStatus): IPT ')[1]
 
-            #  Age, gender and quantity. eg: <15_F_Less than 3 months
-            indicator_key = name.split(', ')[0] + '_' + name.split(', ')[1][0] + '_' + name.split(', ')[2].split(' - ')[1]
+            # Age, gender. eg: <15_F_New
+            indicator_key = name.split(', ')[0] + '_' + name.split(', ')[1][0] + '_' + name.split(', ')[3]
             indicator_metadata['indicator_key'] = indicator_key
 
         return indicators_metadata

@@ -9,6 +9,10 @@ class PatientPharmacyForm:
 
     LAST_PICKUP_DATA_ELEMENT_ID = 'f1E1lgVGby4'
 
+    INH_START_DATA_ELEMENT_ID = 'Pf04x1AyClb'
+
+    INH_END_DATA_ELEMENT_ID = 'UsCWLykafO8'
+
     def __init__(self, logger, api) -> None:
         self.logger = logger
         self.api = api
@@ -66,3 +70,44 @@ class PatientPharmacyForm:
             #calculate next pickupDate of the period
             if lastPickupDate != 'nan' and pickupQuantity != 'nan':
                 patient['priorNextPickupDate'] = pd.to_datetime(lastPickupDate) + pd.Timedelta(days=int(pickupQuantity))
+
+
+    def add_inh_start_date(self, patient, start_period, end_period):
+        NINE_MONTHS = 9
+        SIX_MONTS = 6
+
+        start_period_less_nine_months = (pd.to_datetime(start_period) - pd.DateOffset(months=NINE_MONTHS)).strftime('%Y-%m-%d')
+        end_period_less_six_months = (pd.to_datetime(end_period) - pd.DateOffset(months=SIX_MONTS)).strftime('%Y-%m-%d')
+
+        patient_id = patient['trackedEntity']
+        org_unit = patient['orgUnit']
+      
+        inh_start_date = self.api.get('tracker/events', params=[('orgUnit',org_unit), ('program',CARE_AND_TREATMENT), ('programStage',self.PHARMACY_STAGE), ('trackedEntity',patient_id), ('fields','{,trackedEntity,programStage,dataValues=[dataElement,value]}'), ('filter',f'{self.INH_START_DATA_ELEMENT_ID}:GE:{start_period_less_nine_months}'), ('filter',f'{self.INH_START_DATA_ELEMENT_ID}:LE:{end_period_less_six_months}'), ('pageSize','1')])
+
+        if inh_start_date.json()['instances']:
+            inh_start_date = inh_start_date.json()['instances'][0]
+            
+            for data in inh_start_date['dataValues']:
+                # get INH start date 
+                if data['dataElement'] == 'Pf04x1AyClb':
+                    patient['inhStartDate'] = data['value']
+
+
+    def add_inh_end_date(self, patient, start_period, end_period):
+        
+        THREE_MONTHS = 3
+
+        start_period_less_three_months = (pd.to_datetime(start_period) - pd.DateOffset(months=THREE_MONTHS)).strftime('%Y-%m-%d')
+      
+        patient_id = patient['trackedEntity']
+        org_unit = patient['orgUnit']
+      
+        inh_start_date = self.api.get('tracker/events', params=[('orgUnit',org_unit), ('program', CARE_AND_TREATMENT), ('programStage', self.PHARMACY_STAGE), ('trackedEntity', patient_id), ('fields','{,trackedEntity,programStage,dataValues=[dataElement,value]}'), ('filter',f'{self.INH_END_DATA_ELEMENT_ID}:GE:{start_period_less_three_months}'), ('filter',f'{self.INH_END_DATA_ELEMENT_ID}:LE:{end_period}'), ('pageSize','1')])
+
+        if inh_start_date.json()['instances']:
+            inh_start_date = inh_start_date.json()['instances'][0]
+            
+            for data in inh_start_date['dataValues']:
+                # get INH end date 
+                if data['dataElement'] == 'UsCWLykafO8':
+                    patient['inhEndDate'] = data['value']
