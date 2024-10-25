@@ -78,7 +78,7 @@ class TbArtResource:
             indicators.to_csv('TB_ART_DATA.csv', index=False)
 
     def run(self):
-        # self.extract_tb_enrollements()
+        self.extract_tb_enrollements()
         self.logger.info('The TB_ART_ENROLLMENTS.csv is completed.')
 
         self.process_tb_art_indicators()
