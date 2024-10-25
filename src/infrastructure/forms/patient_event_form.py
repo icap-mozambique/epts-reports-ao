@@ -188,28 +188,37 @@ class PatientEventForm:
 
        if len(first_tb) != 0:
            data_values = first_tb[0]['dataValues']
+           self.tb_form_data(patient, data_values)
 
-           for data_value in data_values:
-               
-               # TB ENROLLMENT DATE
-               if data_value['dataElement'] == 'kvEVYX7nMso':
-                   patient['enrollmentDate'] =  data_value['value'] 
+    def add_patient_last_tb_event(self, patient):
+       last_tb = self.api.get('tracker/events', params={'orgUnit':patient['orgUnit'], 'program':TB, 'programStage':TB_STAGE, 'trackedEntity':patient['trackedEntity'], 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'order':'occurredAt:desc', 'pageSize':'1'})
+       last_tb = last_tb.json()['instances']
 
-               # TB HIV TEST DATE
-               if data_value['dataElement'] == 'tdDPWBFtKfM':
-                   patient['hivTestDate'] =  data_value['value'] 
+       if len(last_tb) != 0:
+           data_values = last_tb[0]['dataValues']
+           self.tb_form_data(patient, data_values)
 
-               # TB HIV TEST RESULT
-               if data_value['dataElement'] == 'aFAkYYmy78J':
-                   patient['testResult'] =  data_value['value'] 
+    def tb_form_data (self, patient, data_values):
+        for data_value in data_values:
+            # TB ENROLLMENT DATE
+            if data_value['dataElement'] == 'kvEVYX7nMso':
+                patient['enrollmentDate'] =  data_value['value'] 
 
-               # TB ART START DATE
-               if data_value['dataElement'] == 'ZAgN1kYejG2':
-                   patient['artStartDate'] =  data_value['value'] 
+            # TB HIV TEST DATE
+            if data_value['dataElement'] == 'tdDPWBFtKfM':
+                patient['hivTestDate'] =  data_value['value'] 
 
-               # TB ART STATUS
-               if data_value['dataElement'] == 'PaB03WOer8w':
-                   patient['artStatus'] =  data_value['value'] 
+            # TB HIV TEST RESULT
+            if data_value['dataElement'] == 'aFAkYYmy78J':
+                patient['testResult'] =  data_value['value'] 
+
+            # TB ART START DATE
+            if data_value['dataElement'] == 'ZAgN1kYejG2':
+                patient['artStartDate'] =  data_value['value'] 
+
+            # TB ART STATUS
+            if data_value['dataElement'] == 'PaB03WOer8w':
+                patient['artStatus'] =  data_value['value']
 
     def add_patient_last_dpi_event(self, patient):
        last_dpi = self.api.get('tracker/events', params={'orgUnit':patient['orgUnit'], 'program':DPI, 'programStage':DPI_STAGE, 'trackedEntity':patient['trackedEntity'], 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'order':'occurredAt:desc', 'pageSize':'1'})

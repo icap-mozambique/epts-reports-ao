@@ -4,3 +4,4 @@ from .pmtct_resource import PmtctResource
 from .hts_resource import HtsResource
 from .hts_index_resource import HtsIndexResource
 from .tb_prev_resource import TbPrevResource
+from .tb_art_resource import TbArtResource
