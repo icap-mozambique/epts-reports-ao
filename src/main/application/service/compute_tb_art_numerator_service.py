@@ -16,7 +16,7 @@ class ComputeTbArtNumeratorService(ComputeTbArtNumeratorUseCase):
             if str(patient['artStatus']) == 'nan':
                 continue
 
-            if patient['testResult'] != 'POSITIVO':
+            if patient['testResult'] != 'POSITIVO' and patient['testResult'] !='POSITIVO_CONHECIDO':
                 continue
 
             if patient['artStatus'] != 'NOVO' and patient['artStatus'] != 'ANTIGO':
