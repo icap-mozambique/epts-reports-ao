@@ -36,7 +36,7 @@ class ComputeTbPrevDenominatorService(ComputeTbPrevDenominatorUseCase):
 
             patient['artStart'] = 'Already'
 
-            if self.NEWLY_ENROLLED_DAYS >= (pd.to_datetime(patient['inhStartDate']) - pd.to_datetime(patient['artStartDate'])).days:
+            if self.NEWLY_ENROLLED_DAYS <= (pd.to_datetime(patient['inhStartDate']) - pd.to_datetime(patient['artStartDate'])).days:
                 patient['artStart'] = 'New'
             
             patients.append(patient)

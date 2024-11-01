@@ -1,6 +1,6 @@
 from dhis2 import Api
 
-from src.infrastructure.forms.program import DPI, DPI_STAGE, PTV, PTV_STAGE, TB, TB_STAGE
+from src.infrastructure.forms import DPI, DPI_STAGE, INDEX, PTV, PTV_STAGE, TB, TB_STAGE, INDEX_CONTACTS_STAGE
 
 class PatientEventForm:
 
@@ -86,41 +86,6 @@ class PatientEventForm:
             data_values = patient_event['dataValues']
             
             for data_value in data_values:
-                
-                # INDEX CASE New case
-                if data_value['dataElement'] == 'v3pBLn8T0aF':
-                    patient_event['ic_new_case'] = data_value['value']
-                    continue
-
-                # INDEX CASE result
-                if data_value['dataElement'] == 'kYwM1zzUgrg':
-                    patient_event['result'] = data_value['value']
-                    continue
-
-                # INDEX CASE Test Date
-                if data_value['dataElement'] == 'u4P9Vo7xnBi':
-                    patient_event['ic_date'] = data_value['value']
-                    continue
-
-                # INDEX CASE Age
-                if data_value['dataElement'] == 'h3t89GiutbB':
-                    patient_event['patientAge'] = data_value['value']
-                    continue
-
-                # INDEX CASE SEX
-                if data_value['dataElement'] == 'dGhN36P3NdR':
-                    patient_event['patientSex'] = data_value['value']
-                    continue
-
-                # INDEX CASE TESTING LOCATION
-                if data_value['dataElement'] == 'o81crJ9IIwm':
-                    patient_event['testingLocation'] = data_value['value']
-                    continue
-
-                # INDEX CASE OUTCOME
-                if data_value['dataElement'] == 'SEBqzQmxYz0':
-                    patient_event['outcome'] = data_value['value']
-                    continue
 
                 # INDEX CASE ACCEPTED TEST CHILDREN LESS THAN 15 YEARS
                 if data_value['dataElement'] == 't63nrRfyPif':
@@ -166,6 +131,10 @@ class PatientEventForm:
                if data_value['dataElement'] == 'A2KEZYwGcBm':
                    patient['ancType'] =  data_value['value'] 
 
+               # ANC TEST DATE
+               if data_value['dataElement'] == 'tdDPWBFtKfM':
+                   patient['testDate'] =  data_value['value']
+
                # ANC TEST RESULT
                if data_value['dataElement'] == 'GhlV6KkqSrl':
                    patient['testResult'] =  data_value['value'] 
@@ -181,6 +150,10 @@ class PatientEventForm:
                # ANC ON ART
                if data_value['dataElement'] == 'XzilEjpZy3g':
                    patient['onArt'] =  data_value['value'] 
+
+               # ANC OUTCOME
+               if data_value['dataElement'] == 'fZfoDVLfS0l':
+                   patient['outcome'] =  data_value['value'] 
 
     def add_patient_first_tb_event(self, patient):
        first_tb = self.api.get('tracker/events', params={'orgUnit':patient['orgUnit'], 'program':TB, 'programStage':TB_STAGE, 'trackedEntity':patient['trackedEntity'], 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'order':'occurredAt:asc', 'pageSize':'1'})
@@ -220,12 +193,18 @@ class PatientEventForm:
             if data_value['dataElement'] == 'PaB03WOer8w':
                 patient['artStatus'] =  data_value['value']
 
+            # TB OUTCOME
+            if data_value['dataElement'] == 'R5gf9647vIA':
+                patient['outcome'] =  data_value['value']
+
     def add_patient_last_dpi_event(self, patient):
-       last_dpi = self.api.get('tracker/events', params={'orgUnit':patient['orgUnit'], 'program':DPI, 'programStage':DPI_STAGE, 'trackedEntity':patient['trackedEntity'], 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'order':'occurredAt:desc', 'pageSize':'1'})
+       last_dpi = self.api.get('tracker/events', params={'orgUnit':patient['orgUnit'], 'program':DPI, 'programStage':DPI_STAGE, 'trackedEntity':patient['trackedEntity'], 'fields':'{,trackedEntity,programStage,occurredAt,dataValues=[dataElement,value]}', 'order':'occurredAt:desc', 'pageSize':'1'})
        last_dpi = last_dpi.json()['instances']
 
        if len(last_dpi) != 0:
            data_values = last_dpi[0]['dataValues']
+
+           patient['testDate'] = last_dpi[0]['occurredAt'].split('T')[0]
 
            for data_value in data_values:
                
@@ -244,3 +223,51 @@ class PatientEventForm:
                # DPI ART START DATE
                if data_value['dataElement'] == 'F8UJoKnqf9k':
                    patient['artStartDate'] =  data_value['value']
+
+               # DPI OUTCOME
+               if data_value['dataElement'] == 'WWEtp1FCi70':
+                   patient['outcome'] =  data_value['value']
+
+    def find_index_contacts_by_unit_and_period(self, unit, start_date, end_date):
+        TEST_DATE_ID = 'u4P9Vo7xnBi'
+
+        contacts_events = self.api.get('tracker/events', params=[('skipPaging',True), ('fields','event, status, program, trackedEntity, orgUnit, occurredAt, dataValues[dataElement,value]'), ('program', INDEX), ('programStage', INDEX_CONTACTS_STAGE), ('orgUnit', unit), ('filter',f'{TEST_DATE_ID}:GE:{start_date}'), ('filter', f'{TEST_DATE_ID}:LE:{end_date}')])
+
+        contacts_events = contacts_events.json()['instances']
+
+        contacts_events = self.remove_duplicates(contacts_events)
+
+        for contact_event in contacts_events:
+            data_values = contact_event['dataValues']
+
+            for data_value in data_values:
+
+                # INDEX CASE result
+                if data_value['dataElement'] == 'kYwM1zzUgrg':
+                    contact_event['result'] = data_value['value']
+                    continue
+
+                # INDEX CASE Test Date
+                if data_value['dataElement'] == 'u4P9Vo7xnBi':
+                    contact_event['ic_date'] = data_value['value']
+                    continue
+
+                # INDEX CASE Age
+                if data_value['dataElement'] == 'h3t89GiutbB':
+                    contact_event['patientAge'] = data_value['value']
+                    continue
+
+                # INDEX CASE SEX
+                if data_value['dataElement'] == 'dGhN36P3NdR':
+                    contact_event['patientSex'] = data_value['value']
+                    continue
+
+                # INDEX CASE TESTING LOCATION
+                if data_value['dataElement'] == 'o81crJ9IIwm':
+                    contact_event['testingLocation'] = data_value['value']
+                    continue
+
+                # INDEX CASE OUTCOME
+                if data_value['dataElement'] == 'SEBqzQmxYz0':
+                    contact_event['outcome'] = data_value['value']
+                    continue

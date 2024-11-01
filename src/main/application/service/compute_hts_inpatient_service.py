@@ -32,8 +32,8 @@ class ComputeHtsInpatientService(ComputeHtsInpatientUseCase):
 
             if patient_event['result'] != 'POSITIVO' and patient_event['result'] != 'NEGATIVO':
                 continue
-
-            if patient_event['section'] != 'INTERNAMENTO_MEDICINA':
+            
+            if patient_event['section'] != 'INTERNAMENTO_MEDICINA' and patient_event['section'] != 'INTERNAMENTO_PEDIATRIA':
                 continue
 
             if patient_event['result'] == 'POSITIVO':

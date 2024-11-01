@@ -31,6 +31,10 @@ class PatientConsultationForm:
                 if data['dataElement'] == 'QUgeSSXNzQB':
                     patient['artStartDate'] = data['value']
 
+                # entry type
+                if data['dataElement'] == 'coUpJW0EwSl':
+                    patient['entryType'] = data['value']
+
 
     def add_patient_pregnant_or_breastfeeding_status(self, patient, end_period):
         org_unit = patient['orgUnit']

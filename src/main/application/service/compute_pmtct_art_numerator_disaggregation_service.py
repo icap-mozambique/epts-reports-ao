@@ -96,7 +96,7 @@ class ComputePmtctArtNumeratorDisaggregationService(ComputePmtctArtNumeratorDisa
         if str(patient['artStatus']) == 'NOVO' and art == 'New':
             return True
         
-        if str(patient['artStatus']) == 'ANTIGO' and art == 'Already':
+        if (str(patient['artStatus']) == 'ANTIGO' or str(patient['artStatus']) == 'TARV_NOUTRA_US') and art == 'Already':
             return True
         
         return False

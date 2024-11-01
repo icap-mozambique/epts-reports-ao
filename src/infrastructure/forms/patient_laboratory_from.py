@@ -8,7 +8,7 @@ class PatientLaboratoryForm:
 
     LAB_STAGE = 'KXYMcOQZXLf'
 
-    VIRAL_LOAD_RESULT_DATE = 'zY8C9WSkt4n'
+    VIRAL_LOAD_REQUEST_DATE = 'Za5VzGmNThC'
 
     def __init__(self, logger: Logger ,api) -> None:
         self.logger = logger
@@ -37,7 +37,7 @@ class PatientLaboratoryForm:
         org_unit = patient['orgUnit']
         
         try:
-            viral_load = self.api.get('tracker/events', params={'orgUnit':org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.LAB_STAGE, 'trackedEntity':patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}','filter':f'{self.VIRAL_LOAD_RESULT_DATE}:LE:{end_period}', 'order':f'{self.VIRAL_LOAD_RESULT_DATE}:desc', 'pageSize':'1'})
+            viral_load = self.api.get('tracker/events', params={'orgUnit':org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.LAB_STAGE, 'trackedEntity':patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}','filter':f'{self.VIRAL_LOAD_REQUEST_DATE}:LE:{end_period}', 'order':f'{self.VIRAL_LOAD_REQUEST_DATE}:desc', 'pageSize':'1'})
         except RequestException as e:
             description = json.loads(e.description)
             message = description['message']
@@ -49,9 +49,9 @@ class PatientLaboratoryForm:
             viral_load = viral_load.json()['instances'][0]
             
             for data in viral_load['dataValues']:
-                # viral load result date
-                if data['dataElement'] == 'zY8C9WSkt4n':
-                    patient['viralLoadResultDate'] = data['value']
+                # viral load request date
+                if data['dataElement'] == 'Za5VzGmNThC':
+                    patient['viralLoadRequestDate'] = data['value']
 
                 # viral load result value
                 if data['dataElement'] == 'SstcDVhu5ah':

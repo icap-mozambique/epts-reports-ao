@@ -13,7 +13,11 @@ class ComputePmtctHeiService(ComputePmtctHeiUseCase):
             if patient['testResult'] != 'POSITIVO' and patient['testResult'] != 'NEGATIVO':
                 continue
 
-            patients.append(patient)
+            if patient['testResult'] == 'POSITIVO' :
+                if 'outcome' in patient and (patient['outcome'] == 'SEGUIMENTO_NESTA_US' or patient['outcome'] == 'SEGUIMENTO_NOUTRA_US' or patient['outcome'] == 'OBITO'):
+                    patients.append(patient)
+            else:
+                patients.append(patient)
         
         return patients
 

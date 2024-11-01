@@ -33,7 +33,7 @@ class ComputeHtsOtherPitcService(ComputeHtsOtherPitcUseCase):
             if patient_event['result'] != 'POSITIVO' and patient_event['result'] != 'NEGATIVO':
                 continue
 
-            if patient_event['section'] != 'HEMOTERAPIA' and patient_event['section'] != 'PF' and patient_event['section'] != 'OUTRA':
+            if patient_event['section'] != 'HEMOTERAPIA' and patient_event['section'] != 'PF' and patient_event['section'] != 'CONSULTA_EXTERNA' and patient_event['section'] != 'OUTRA':
                 continue
 
             if patient_event['result'] == 'POSITIVO':

@@ -26,7 +26,13 @@ class ComputePmtctArtNumeratorService(ComputePmtctArtNumeratorUseCase):
             if enrolled_patient['onArt'] != True:
                 continue
 
-            patients.append(enrolled_patient)
+            if enrolled_patient['testResult'] == 'POSITIVO_CONHECIDO' :
+                if 'outcome' in enrolled_patient and (enrolled_patient['outcome'] == 'FAZ_TARV' or enrolled_patient['outcome'] == 'VIH_POSITIVO'):
+                    patients.append(enrolled_patient)
+                    continue
+            else:
+                if 'outcome' in enrolled_patient and (enrolled_patient['outcome'] == 'SEGUIMENTO_NESTA_US' or enrolled_patient['outcome'] == 'SEGUIMENTO_NOUTRA_US' or enrolled_patient['outcome'] == 'OBITO'):
+                    patients.append(enrolled_patient)
         
         return patients
 

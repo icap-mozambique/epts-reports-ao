@@ -34,7 +34,7 @@ class ComputeHtsEmergenceWardService(ComputeHtsEmergenceWardUseCase):
             if patient_event['result'] != 'POSITIVO' and patient_event['result'] != 'NEGATIVO':
                 continue
 
-            if patient_event['section'] != 'INTERNAMENTO_PEDIATRIA' and patient_event['section'] != 'CONSULTA_EXTERNA' and patient_event['section'] != 'BU_PEDIATRIA' and patient_event['section'] != 'BU_MEDICINA':
+            if patient_event['section'] != 'BU_PEDIATRIA' and patient_event['section'] != 'BU_MEDICINA':
                 continue
 
             if patient_event['result'] == 'POSITIVO':

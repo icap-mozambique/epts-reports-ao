@@ -6,18 +6,14 @@ from src.main.application.income import ComputeTxNewUseCase
 
 class ComputeTxNewService(ComputeTxNewUseCase):
 
-    def __init__(self, compute_tx_curr_use_case: ComputeTxCurrUseCase, logger: Logger):
-        self.compute_tx_curr_use_case = compute_tx_curr_use_case
+    def __init__(self, logger: Logger):
         self.logger = logger
     
     def compute(self, patients, start_period, end_period):
         tx_new_patients = []
 
         for patient in patients:
-             
-             if not self.compute_tx_curr_use_case.is_currently_on_art(patient, end_period):
-                 continue
-             
+                          
              try:
                  art_start_date = pd.to_datetime(patient['artStartDate'])
              except pd.errors.OutOfBoundsDatetime:

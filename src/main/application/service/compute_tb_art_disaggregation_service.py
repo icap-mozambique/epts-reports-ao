@@ -84,7 +84,7 @@ class ComputeTbArtDisaggregationService(ComputeTbArtDisaggregationUseCase):
         if patient['artStatus'] == 'NOVO' and art_status == 'New':
            return True
 
-        if patient['artStatus'] == 'ANTIGO' and art_status == 'Already':
+        if (patient['artStatus'] == 'ANTIGO' or patient['artStatus'] == 'TARV_NOUTRA_US') and art_status == 'Already':
             return True
 
         return False
