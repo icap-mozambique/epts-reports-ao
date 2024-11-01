@@ -38,30 +38,29 @@ class HtsIndexResource:
 
         # Load patients envents
         patient_demographics = PatientDemographicForm(self.api)
-        patient_events_port = PatientEventForm(self.api)
 
         for org_unit in self.org_units:
 
             org_unit = org_unit['id']
 
             #get all patient events
-            patients_events = patient_events_port.find_patient_events_by_program_program_stage_unit_and_period(INDEX, INDEX_DETAILS_STAGE, org_unit, self.start_period, self.end_period)
+            patients_enrolled = self.api.get('tracker/enrollments', params={'orgUnit':org_unit, 'skipPaging':'true', 'program': INDEX, 'fields':'{,enrollment, enrolledAt, orgUnit, trackedEntity, program, status,}', 'enrolledAfter':f'{self.start_period}', 'enrolledBefore':f'{self.end_period}', 'order':'enrolledAt:asc'})
 
-            self.logger.info(f"Processing the facility: {org_unit}, a total of {len(patients_events)} enrolled patient(s)")
+            self.logger.info(f"Processing the facility: {org_unit}, a total of {len(patients_enrolled)} enrolled patient(s)")
             
             counter = 1
 
-            for patient_enrolled in patients_events:
+            for patient_enrolled in patients_enrolled:
                 patient_demographics.add_demographics(patient_enrolled)
 
-                self.logger.info(f"From {len (patients_events)} patietnts enrolled, {counter} (is) are ready to be processed.")
+                self.logger.info(f"From {len (patients_enrolled)} patietnts enrolled, {counter} (is) are ready to be processed.")
                 counter = counter + 1 
 
-            if patients_events:
-                patients_events = pd.json_normalize(patients_events)
+            if patients_enrolled:
+                patients_enrolled = pd.json_normalize(patients_enrolled)
                 
                 enrollments = pd.read_csv('INDEX_ENROLLMENTS.csv')
-                enrollments = pd.concat([enrollments, patients_events])
+                enrollments = pd.concat([enrollments, patients_enrolled])
                 enrollments.to_csv('INDEX_ENROLLMENTS.csv', index=False, encoding='utf-8')
             
         
@@ -78,7 +77,7 @@ class HtsIndexResource:
             org_unit = org_unit['id']
 
             #get all patient events
-            patients_events = patient_events_port.find_patient_events_by_program_program_stage_unit_and_period(INDEX, INDEX_CONTACTS_STAGE, org_unit, self.start_period, self.end_period)
+            patients_events = patient_events_port.find_index_contacts_by_unit_and_period(org_unit, self.start_period, self.end_period)
 
             self.logger.info(f"Processing the facility: {org_unit}, a total of {len(patients_events)} enrolled patient(s)")
 

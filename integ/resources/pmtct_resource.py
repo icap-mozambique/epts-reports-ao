@@ -37,7 +37,7 @@ class PmtctResource:
         self.org_units = org_units
     
     def extract_pmtct_enrollments(self):
-        enrollments = pd.DataFrame(columns=['enrollment', 'trackedEntity', 'program', 'status', 'orgUnit', 'enrolledAt', 'patientIdentifier', 'patientAge', 'patientSex','patientName', 'ancType', 'testResult', 'artStartDate', 'artStatus', 'onArt'])
+        enrollments = pd.DataFrame(columns=['enrollment', 'trackedEntity', 'program', 'status', 'orgUnit', 'enrolledAt', 'patientIdentifier', 'patientAge', 'patientSex','patientName', 'ancType', 'testDate', 'testResult', 'artStartDate', 'artStatus', 'onArt'])
         enrollments.to_csv('PMTCT_ENROLLMENTS.csv', index=False)
 
         # Load patients enrolled
@@ -72,7 +72,7 @@ class PmtctResource:
                 enrollments.to_csv('PMTCT_ENROLLMENTS.csv', index=False, encoding='utf-8')
     
     def extract_pmtct_dpi_enrollments(self):
-        dpi_enrollments = pd.DataFrame(columns=['enrollment', 'trackedEntity', 'program', 'status', 'orgUnit', 'enrolledAt', 'patientIdentifier', 'patientAge', 'patientSex','patientName', 'exposed', 'pcrNumber', 'testResult', 'artStartDate'])
+        dpi_enrollments = pd.DataFrame(columns=['enrollment', 'trackedEntity', 'program', 'status', 'orgUnit', 'enrolledAt', 'patientIdentifier', 'patientAge', 'patientSex','patientName', 'exposed', 'pcrNumber', 'testDate', 'testResult', 'artStartDate'])
         dpi_enrollments.to_csv('DPI_ENROLLMENTS.csv', index=False)
 
         # Load patients enrolled
@@ -126,7 +126,7 @@ class PmtctResource:
         self.logger.info('PMTCT_STAT_DENOMINATOR completed!')
 
         pmtct_stat_numerator_service = ComputePmtctStatNumeratorService()
-        pmtct_stat_numerator_patients = pmtct_stat_numerator_service.compute(enrollments)
+        pmtct_stat_numerator_patients = pmtct_stat_numerator_service.compute(enrollments, self.start_period)
         pmtct_stat_numerator_indicator_metadata_port = PmtctStatNumeratorIndicatorMetadataAdapter(self.api)
         pmtct_stat_numerator_disaggregation_service = ComputePmtctStatNumeratorDisaggregationService(self.logger, pmtct_stat_numerator_indicator_metadata_port)
         pmtct_stat_numerator_patients_disaggregation = pmtct_stat_numerator_disaggregation_service.compute(pmtct_stat_numerator_patients, self.end_period)

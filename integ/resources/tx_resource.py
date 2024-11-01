@@ -45,7 +45,7 @@ class TxResource:
     def prepare_tx_indicators(self):
 
         self.tx_curr_service = ComputeTxCurrService(self.logger)
-        self.tx_new_service = ComputeTxNewService(self.tx_curr_service, self.logger)
+        self.tx_new_service = ComputeTxNewService(self.logger)
 
         tx_curr_indicator_metadata_port = TxCurrIndicatorMetadataAdapter(self.api)
         arv_dispense_indicator_metadata_port = ArvDispenseIndicatorMetadataAdapter(self.api)
@@ -63,7 +63,7 @@ class TxResource:
         patient_laboratoty_form = PatientLaboratoryForm(self.logger,self.api)
         laboratory_port = LaboratoryAdapter(patient_laboratoty_form)
 
-        self.tx_pvls_denominator_service = ComputeTxPvlsDenominatorService(self.logger, self.tx_curr_service, laboratory_port, consultation_port)
+        self.tx_pvls_denominator_service = ComputeTxPvlsDenominatorService(self.logger, laboratory_port, consultation_port)
         self.tx_pvls_numerator_service = ComputeTxPvlsNumeratorService()
 
         tx_pvls_denominator_indicator_metadata_port = TxPvlsDenominatorIndicatorMetadataAdapter(self.api)
@@ -84,7 +84,7 @@ class TxResource:
 
     def extract_tx_enrollments(self):
         enrollments = pd.DataFrame(columns=['enrollment', 'trackedEntity', 'program', 'status', 'orgUnit', 'enrolledAt', 'patientIdentifier', 'patientAge', 'patientSex','patientName', 
-                                    'artStartDate', 'firstConsultationDate','pickupQuantity', 'lastPickupDate', 'nextPickupDate', 'lastCD4', 'viralLoadResultDate', 
+                                    'artStartDate', 'firstConsultationDate','pickupQuantity', 'lastPickupDate', 'nextPickupDate', 'lastCD4', 'viralLoadRequestDate', 
                                     'viralLoadResultValue', 'transferedOut', 'dateOfTransfer','dead', 'dateOfDeath'])
         
         enrollments.to_csv('TX_ENROLLMENTS.csv', index=False)
@@ -109,7 +109,6 @@ class TxResource:
             counter = 1
 
             for patient_enrolled in patients_enrolled:
-                patient_id = patient_enrolled['trackedEntity']
 
                 patient_demographics.add_demographics(patient_enrolled)
 
@@ -138,13 +137,13 @@ class TxResource:
         tx_curr_patients = self.tx_curr_service.compute(enrollments, end_period)
         tx_curr_patients_disaggregation = self.tx_curr_disaggregation_service.compute(tx_curr_patients, end_period)
 
-        tx_new_patients = self.tx_new_service.compute(tx_curr_patients, start_period, end_period)
+        tx_new_patients = self.tx_new_service.compute(enrollments, start_period, end_period)
         tx_new_patients_disaggregation = self.tx_new_disaggretation_service.compute(tx_new_patients, end_period)
 
         tx_ml_patients = self.tx_ml_service.compute(enrollments, start_period, end_period, ComputeTxMlService.QUARTERLY_DAYS_EXPECTED)
         tx_ml_patients_disaggregation = self.tx_ml_disaggregation_service.compute(tx_ml_patients, end_period)
 
-        tx_pvls_denominator_patients = self.tx_pvls_denominator_service.compute(tx_curr_patients, end_period)
+        tx_pvls_denominator_patients = self.tx_pvls_denominator_service.compute(enrollments, end_period)
         tx_pvls_denominator_patients_disaggregation = self.tx_pvls_denominator_disaggregation_service.compute(tx_pvls_denominator_patients, end_period)
 
         tx_pvls_numerator_patients = self.tx_pvls_numerator_service.compute(tx_pvls_denominator_patients)
