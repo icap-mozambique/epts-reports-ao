@@ -17,6 +17,12 @@ class ComputeTxPvlsDenominatorService(ComputeTxPvlsDenominatorUseCase):
         patients = []
         
         for patient in art_patients:
+
+            if str(patient['dead']) != 'nan':
+                 continue
+            
+            if str(patient['transferedOut']) != 'nan':
+                continue
             
             try:
                 pd.to_datetime(patient['patientAge'])
@@ -49,7 +55,7 @@ class ComputeTxPvlsDenominatorService(ComputeTxPvlsDenominatorUseCase):
 
             self.consultation_port.add_patient_pregnant_or_breastfeeding_status(patient, end_period)
 
-            if (patient['pregnant'] == True or patient['breastfeeding']== True) and days_between >= self.DAYS_IN_ART:
+            if (('pregnant' in patient and patient['pregnant'] == True) or ('breastfeeding' in patient and patient['breastfeeding']== True)) and days_between >= self.DAYS_IN_ART:
                 patients.append(patient)
                 continue
 

@@ -12,31 +12,38 @@ class ComputeTxCurrService(ComputeTxCurrUseCase):
         patients = []
         
         for patient_enrolled in patients_enrolled:
-                if self.is_currently_on_art(patient_enrolled, end_period):
-                       patients.append(patient_enrolled)
+              if self.is_currently_on_art(patient_enrolled, end_period):
+                    patients.append(patient_enrolled)
                        
         return patients
                                 
     def is_currently_on_art(self, patient, end_period) -> bool:
+        
+        if str(patient['dead']) != 'nan':
+              return False
+        
+        if str(patient['transferedOut']) != 'nan':
+              return False
+
         if str(patient['nextPickupDate']) == 'nan':
-                return False
+              return False
                 
         if str(patient['artStartDate']) == 'nan':
-                return False
+              return False
         
         try:
-               pd.to_datetime(patient['artStartDate'])
+              pd.to_datetime(patient['artStartDate'])
         except pd.errors.OutOfBoundsDatetime:
-               self.logger.warning(f"The patient: {patient['trackedEntity']} - {patient['patientIdentifier']} - {patient['patientName']} - {patient['patientSex']} of facility {patient['orgUnit']} was not processed due to invalid next ART start date: {patient['artStartDate']}")
-               return False
+              self.logger.warning(f"The patient: {patient['trackedEntity']} - {patient['patientIdentifier']} - {patient['patientName']} - {patient['patientSex']} of facility {patient['orgUnit']} was not processed due to invalid next ART start date: {patient['artStartDate']}")
+              return False
         
         try:
-               last_art_date = pd.to_datetime(patient['nextPickupDate']) + pd.Timedelta(days=self.DAYS_EXPECTED)
+              last_art_date = pd.to_datetime(patient['nextPickupDate']) + pd.Timedelta(days=self.DAYS_EXPECTED)
         except pd.errors.OutOfBoundsDatetime:
-               self.logger.warning(f"The patient: {patient['trackedEntity']} - {patient['patientIdentifier']} - {patient['patientName']} - {patient['patientSex']} of facility {patient['orgUnit']} was not processed due to invalid next ART pickup date: {patient['nextPickupDate']}")
-               return False
+              self.logger.warning(f"The patient: {patient['trackedEntity']} - {patient['patientIdentifier']} - {patient['patientName']} - {patient['patientSex']} of facility {patient['orgUnit']} was not processed due to invalid next ART pickup date: {patient['nextPickupDate']}")
+              return False
             
-        if last_art_date >= pd.to_datetime(end_period) and str(patient['dead']) == 'nan':
-                return True
+        if last_art_date >= pd.to_datetime(end_period):
+              return True
         
         return False

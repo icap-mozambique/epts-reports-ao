@@ -1,7 +1,7 @@
 
 from logging import Logger
 import pandas as pd
-from src.main.application.income import ComputeTxCurrUseCase
+
 from src.main.application.income import ComputeTxNewUseCase
 
 class ComputeTxNewService(ComputeTxNewUseCase):

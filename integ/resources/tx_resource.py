@@ -143,7 +143,7 @@ class TxResource:
         tx_ml_patients = self.tx_ml_service.compute(enrollments, start_period, end_period, ComputeTxMlService.QUARTERLY_DAYS_EXPECTED)
         tx_ml_patients_disaggregation = self.tx_ml_disaggregation_service.compute(tx_ml_patients, end_period)
 
-        tx_pvls_denominator_patients = self.tx_pvls_denominator_service.compute(enrollments, end_period)
+        tx_pvls_denominator_patients = self.tx_pvls_denominator_service.compute(enrollments, start_period, end_period)
         tx_pvls_denominator_patients_disaggregation = self.tx_pvls_denominator_disaggregation_service.compute(tx_pvls_denominator_patients, end_period)
 
         tx_pvls_numerator_patients = self.tx_pvls_numerator_service.compute(tx_pvls_denominator_patients)
