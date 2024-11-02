@@ -33,7 +33,7 @@ class ComputePmtctStatNumeratorService(ComputePmtctStatNumeratorUseCase):
             if enrolled_patient['testResult'] != 'POSITIVO' and enrolled_patient['testResult'] != 'NEGATIVO':
                 continue
             
-            if enrolled_patient['result'] == 'POSITIVO':
+            if enrolled_patient['testResult'] == 'POSITIVO':
                 if 'outcome' in enrolled_patient and (enrolled_patient['outcome'] == 'SEGUIMENTO_NESTA_US' or enrolled_patient['outcome'] == 'SEGUIMENTO_NOUTRA_US' or enrolled_patient['outcome'] == 'OBITO'):
                     patients.append(enrolled_patient)
             else:

@@ -20,7 +20,7 @@ class ComputeHtsIndexCaseService(ComputeHtsIndexCaseUseCase):
             if patient['testingLocation'] != 'US':
                 continue
 
-            if patient['testResult'] == 'POSITIVO_CONHECIDO' :
+            if patient['result'] == 'POSITIVO_CONHECIDO' :
                 if 'outcome' in patient and (patient['outcome'] == 'FAZ_TARV' or patient['outcome'] == 'VIH_POSITIVO'):
                     patients.append(patient)
                     continue
