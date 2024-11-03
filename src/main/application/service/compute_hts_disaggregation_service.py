@@ -70,7 +70,13 @@ class ComputeHtsDisaggregationService(ComputeHtsDisaggregationUseCase):
     def age_band_match(self, patient, age_band, end_period):
 
         end_period = pd.to_datetime(end_period)
-        date_of_birth = pd.to_datetime(patient['patientAge'])
+        
+        try:
+            date_of_birth = pd.to_datetime(patient['patientAge'])
+        except pd.errors.OutOfBoundsDatetime:
+            self.logger.warning(f"The patient: {patient['trackedEntity']} - {patient['patientIdentifier']} - {patient['patientName']} - {patient['patientSex']} of facility {patient['orgUnit']} was not processed due to invalid age: {patient['patientAge']}")
+            return False
+        
         years_between = end_period.year - date_of_birth.year
 
         if age_band == self.LESS_THAN_ONE_YEAR and years_between == 0:
