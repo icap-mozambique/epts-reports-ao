@@ -73,7 +73,7 @@ class HtsResource:
         for org_unit in self.org_units:
 
             org_unit = org_unit['id']
-            self.logger.info(f'{len(org_unit)} of {count} - {org_unit}')
+            self.logger.info(f'{len(self.org_units)} of {count} - {org_unit}')
 
             vct_patients = compute_hts_vct.compute(org_unit, self.start_period, self.end_period)
             vct_patients_disaggregated = vct_patients_disaggregation.compute(vct_patients, self.end_period)
