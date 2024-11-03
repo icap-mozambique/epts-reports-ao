@@ -45,6 +45,7 @@ class HtsIndexResource:
 
             #get all patient events
             patients_enrolled = self.api.get('tracker/enrollments', params={'orgUnit':org_unit, 'skipPaging':'true', 'program': INDEX, 'fields':'{,enrollment, enrolledAt, orgUnit, trackedEntity, program, status,}', 'enrolledAfter':f'{self.start_period}', 'enrolledBefore':f'{self.end_period}', 'order':'enrolledAt:asc'})
+            patients_enrolled = patients_enrolled.json()['instances']
 
             self.logger.info(f"Processing the facility: {org_unit}, a total of {len(patients_enrolled)} enrolled patient(s)")
             

@@ -271,3 +271,5 @@ class PatientEventForm:
                 if data_value['dataElement'] == 'SEBqzQmxYz0':
                     contact_event['outcome'] = data_value['value']
                     continue
+        
+        return contacts_events

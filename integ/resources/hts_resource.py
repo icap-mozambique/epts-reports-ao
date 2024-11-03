@@ -96,7 +96,7 @@ class HtsResource:
             maltnutrition_patients = compute_hts_malnutrition.compute(org_unit, self.start_period, self.end_period)
             malnutrition_patients_disaggregated = malnutrition_patients_disaggregation.compute(maltnutrition_patients, self.end_period)
 
-            count = count+1
+            count = count + 1
 
             combination = vct_patients_disaggregated + pregnant_patients_disaggregated + breastfeeding_patients_disaggregated + other_pitc_patients_disaggregated + emergence_ward_patients_disaggregated + inpatients_disaggregated + malnutrition_patients_disaggregated
 
