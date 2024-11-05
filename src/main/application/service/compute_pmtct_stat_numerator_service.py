@@ -19,25 +19,10 @@ class ComputePmtctStatNumeratorService(ComputePmtctStatNumeratorUseCase):
             if str(enrolled_patient['testResult']) == 'nan':
                 continue
 
-            if enrolled_patient['testResult'] == 'POSITIVO_CONHECIDO' :
-                if 'outcome' in enrolled_patient and (enrolled_patient['outcome'] == 'FAZ_TARV' or enrolled_patient['outcome'] == 'VIH_POSITIVO'):
-                    patients.append(enrolled_patient)
-                    continue
-
-            if str(enrolled_patient['testDate']) == 'nan':
+            if enrolled_patient['testResult'] != 'POSITIVO' and enrolled_patient['testResult'] != 'NEGATIVO' and enrolled_patient['testResult'] != 'POSITIVO_CONHECIDO' and enrolled_patient['testResult'] != 'NEGATIVO_CONHECIDO':
                 continue
-
-            if pd.to_datetime(start_period) > pd.to_datetime(enrolled_patient['testDate']):
-                continue
-
-            if enrolled_patient['testResult'] != 'POSITIVO' and enrolled_patient['testResult'] != 'NEGATIVO':
-                continue
-            
-            if enrolled_patient['testResult'] == 'POSITIVO':
-                if 'outcome' in enrolled_patient and (enrolled_patient['outcome'] == 'SEGUIMENTO_NESTA_US' or enrolled_patient['outcome'] == 'SEGUIMENTO_NOUTRA_US' or enrolled_patient['outcome'] == 'OBITO'):
-                    patients.append(enrolled_patient)
-            else:
-                patients.append(enrolled_patient)
+                        
+            patients.append(enrolled_patient)
         
         return patients
 

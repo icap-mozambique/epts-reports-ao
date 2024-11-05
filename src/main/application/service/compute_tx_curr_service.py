@@ -27,16 +27,7 @@ class ComputeTxCurrService(ComputeTxCurrUseCase):
 
         if str(patient['nextPickupDate']) == 'nan':
               return False
-                
-        if str(patient['artStartDate']) == 'nan':
-              return False
-        
-        try:
-              pd.to_datetime(patient['artStartDate'])
-        except pd.errors.OutOfBoundsDatetime:
-              self.logger.warning(f"The patient: {patient['trackedEntity']} - {patient['patientIdentifier']} - {patient['patientName']} - {patient['patientSex']} of facility {patient['orgUnit']} was not processed due to invalid next ART start date: {patient['artStartDate']}")
-              return False
-        
+                                
         try:
               last_art_date = pd.to_datetime(patient['nextPickupDate']) + pd.Timedelta(days=self.DAYS_EXPECTED)
         except pd.errors.OutOfBoundsDatetime:

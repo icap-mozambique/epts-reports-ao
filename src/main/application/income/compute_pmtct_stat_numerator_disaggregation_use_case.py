@@ -4,7 +4,7 @@ class ComputePmtctStatNumeratorDisaggregationUseCase(ABC):
 
     GENDERS = ['Female', 'Male']
 
-    RESULTS = ['Known at Entry Positive', 'Newly Identified Positive', 'Newly Identified Negative']
+    RESULTS = ['Known at Entry Positive', 'Newly Identified Positive', 'Newly Identified Negative', 'Recent Negative']
     
     LESS_THAN_TEN_YEARS = '<10'
     

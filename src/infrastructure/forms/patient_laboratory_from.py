@@ -37,7 +37,7 @@ class PatientLaboratoryForm:
         org_unit = patient['orgUnit']
         
         try:
-            viral_load = self.api.get('tracker/events', params={'orgUnit':org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.LAB_STAGE, 'trackedEntity':patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}','filter':f'{self.VIRAL_LOAD_REQUEST_DATE}:LE:{end_period}', 'order':f'{self.VIRAL_LOAD_REQUEST_DATE}:desc', 'pageSize':'1'})
+            viral_load = self.api.get('tracker/events', params={'orgUnit':org_unit, 'program':CARE_AND_TREATMENT, 'programStage':self.LAB_STAGE, 'trackedEntity':patient_id, 'fields':'{,trackedEntity,programStage,dataValues=[dataElement,value]}', 'occurredBefore':end_period, 'order':'occurredAt:desc'})
         except RequestException as e:
             description = json.loads(e.description)
             message = description['message']

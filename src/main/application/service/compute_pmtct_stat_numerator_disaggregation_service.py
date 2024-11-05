@@ -100,4 +100,7 @@ class ComputePmtctStatNumeratorDisaggregationService(ComputePmtctStatNumeratorDi
         if patient['testResult'] == 'NEGATIVO' and result == 'Newly Identified Negative':
             return True
         
+        if patient['testResult'] == 'NEGATIVO_CONHECIDO' and result == 'Recent Negative':
+            return True
+        
         return False

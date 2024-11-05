@@ -120,6 +120,10 @@ class TxResource:
 
                 patient_outcome_form.add_final_outcome(patient_enrolled)
 
+                patient_laboratory_from.add_last_viral_load_date_of_the_period(patient_enrolled, self.end_period)
+
+                patient_consultation.add_patient_pregnant_or_breastfeeding_status(patient_enrolled, self.end_period)
+
                 self.logger.info(f"From {len (patients_enrolled)} patients enrolled, {counter} (is) are ready to be processed.")
                 counter = counter + 1 
 
