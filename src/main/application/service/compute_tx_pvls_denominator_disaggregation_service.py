@@ -35,7 +35,7 @@ class ComputeTxPvlsDenominatorDisaggregationService(ComputeTxPlvsDenominatorDisa
                     self.update_indicator_value(patient, indicators, metadatas, indicator_key)
 
                     if self.pregnant(patient):
-                        indicator_key = 'pregnant'
+                        indicator_key = 'Pregnant'
 
                         metadatas = [metadata_id for metadata_id in tx_pvls_denominator_preg_breast_inidcator_metadata if indicator_key == metadata_id['indicator_key']]
                         indicator_key = indicator_key + '_' + patient['orgUnit']
@@ -43,7 +43,7 @@ class ComputeTxPvlsDenominatorDisaggregationService(ComputeTxPlvsDenominatorDisa
                         self.update_indicator_value(patient, indicators, metadatas, indicator_key)
 
                     if self.breastfeeding(patient):
-                        indicator_key = 'breastfeeding'
+                        indicator_key = 'Breastfeeding'
                         metadatas = [metadata_id for metadata_id in tx_pvls_denominator_preg_breast_inidcator_metadata if indicator_key == metadata_id['indicator_key']]
                         indicator_key = indicator_key + '_' + patient['orgUnit']
 
