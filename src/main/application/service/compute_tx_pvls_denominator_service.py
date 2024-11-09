@@ -35,7 +35,7 @@ class ComputeTxPvlsDenominatorService(ComputeTxPvlsDenominatorUseCase):
 
             if str(patient['viralLoadRequestDate']) == 'nan':
                 continue
-            
+
             try:
                 last_viral_load_request_date = pd.to_datetime(patient['viralLoadRequestDate'])
             except pd.errors.OutOfBoundsDatetime:
@@ -44,18 +44,22 @@ class ComputeTxPvlsDenominatorService(ComputeTxPvlsDenominatorUseCase):
 
             start_date_nine_months_before = pd.to_datetime(start_period) - pd.DateOffset(months=self.NINE_MONTHS)
 
-            if start_date_nine_months_before < last_viral_load_request_date or last_viral_load_request_date > pd.to_datetime(end_period):
+            if not (last_viral_load_request_date >= start_date_nine_months_before and last_viral_load_request_date <= pd.to_datetime(end_period)):
                 continue
-            
-            art_start_date = pd.to_datetime(patient['artStartDate'])
+
+            try:
+                art_start_date = pd.to_datetime(patient['artStartDate'])
+            except pd.errors.OutOfBoundsDatetime:
+                self.logger.warning(f"The patient: {patient['trackedEntity']} - {patient['patientIdentifier']} - {patient['patientName']} - {patient['patientSex']} of facility {patient['orgUnit']} was not processed due to invalid ART start Date: {patient['artStartDate']}")
+                continue
 
             days_between = (last_viral_load_request_date - art_start_date).days
 
-            if (('pregnant' in patient and patient['pregnant'] == True) or ('breastfeeding' in patient and patient['breastfeeding']== True)) and days_between >= self.DAYS_IN_ART:
+            if (patient['pregnant'] == True or patient['breastfeeding']== True) and days_between >= self.DAYS_IN_ART:
                 patients.append(patient)
                 continue
 
-            if ('pregnant' not in patient or 'breastfeeding' not in patient) and days_between >= self.SIX_MONTH_IN_ART:
+            if patient['pregnant'] and patient['breastfeeding'] and days_between >= self.SIX_MONTH_IN_ART:
                 patients.append(patient)
                     
         return patients
