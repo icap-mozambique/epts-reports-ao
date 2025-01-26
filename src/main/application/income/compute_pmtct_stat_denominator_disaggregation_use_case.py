@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class ComputePmtctStatDenominatorDisaggregationUseCase(ABC):
 
-    GENDERS = ['Female', 'Male']
+    GENDERS = ['Female']
     
     LESS_THAN_TEN_YEARS = '<10'
     

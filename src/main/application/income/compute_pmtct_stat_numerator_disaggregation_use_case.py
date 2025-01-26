@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class ComputePmtctStatNumeratorDisaggregationUseCase(ABC):
 
-    GENDERS = ['Female', 'Male']
+    GENDERS = ['Female']
 
     RESULTS = ['Known at Entry Positive', 'Newly Identified Positive', 'Newly Identified Negative', 'Recent Negative']
     

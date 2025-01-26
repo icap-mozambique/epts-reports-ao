@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class ComputePmtctArtNumeratorDisaggregationUseCase(ABC):
 
-    GENDERS = ['Female', 'Male']
+    GENDERS = ['Female']
 
     ARTS = ['New', 'Already']
     
