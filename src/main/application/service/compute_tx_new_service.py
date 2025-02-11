@@ -13,7 +13,10 @@ class ComputeTxNewService(ComputeTxNewUseCase):
         tx_new_patients = []
 
         for patient in patients:
-                          
+             
+             if patient['entryType'] != 'CASO_NOVO':
+                 continue 
+                  
              try:
                  art_start_date = pd.to_datetime(patient['artStartDate'])
              except pd.errors.OutOfBoundsDatetime:

@@ -63,8 +63,8 @@ class TxResource:
         patient_laboratoty_form = PatientLaboratoryForm(self.logger,self.api)
         laboratory_port = LaboratoryAdapter(patient_laboratoty_form)
 
-        self.tx_pvls_denominator_service = ComputeTxPvlsDenominatorService(self.logger, laboratory_port, consultation_port)
-        self.tx_pvls_numerator_service = ComputeTxPvlsNumeratorService()
+        self.tx_pvls_denominator_service = ComputeTxPvlsDenominatorService(self.logger, laboratory_port, consultation_port, self.tx_curr_service)
+        self.tx_pvls_numerator_service = ComputeTxPvlsNumeratorService(self.tx_curr_service, self.end_period)
 
         tx_pvls_denominator_indicator_metadata_port = TxPvlsDenominatorIndicatorMetadataAdapter(self.api)
         tx_pvls_denominator_pred_breast_indicator_metadata_port = TxPvlsDenominatorPregBreastIndicatorMetadataAdapter(self.api)

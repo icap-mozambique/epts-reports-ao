@@ -8,15 +8,19 @@ from src.main.application.income import ComputeTxCurrUseCase
 
 class ComputeTxPvlsDenominatorService(ComputeTxPvlsDenominatorUseCase):
 
-    def __init__(self, logger: Logger, laboratory_port: LaboratoryPort, consultation_port: ConsultationPort) -> None:
+    def __init__(self, logger: Logger, laboratory_port: LaboratoryPort, consultation_port: ConsultationPort, tx_curr_service: ComputeTxCurrUseCase) -> None:
         self.logger = logger
         self.laboratory_port = laboratory_port
         self.consultation_port = consultation_port
+        self.tx_curr_service = tx_curr_service
 
     def compute(self, art_patients, start_period, end_period):
         patients = []
         
         for patient in art_patients:
+
+            if not self.tx_curr_service.is_currently_on_art(patient, end_period):
+                continue
 
             if str(patient['dead']) != 'nan':
                  continue
