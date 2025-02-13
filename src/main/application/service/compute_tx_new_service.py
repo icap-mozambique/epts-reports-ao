@@ -14,7 +14,7 @@ class ComputeTxNewService(ComputeTxNewUseCase):
 
         for patient in patients:
              
-             if patient['entryType'] != 'CASO_NOVO':
+             if patient['entryType'] == 'TRANSFERIDO':
                  continue 
                   
              try:
