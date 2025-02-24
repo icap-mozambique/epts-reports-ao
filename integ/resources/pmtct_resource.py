@@ -163,8 +163,8 @@ class PmtctResource:
     
 
     def run(self):
-        # self.extract_pmtct_enrollments()
-        # self.logger.info('PMTCT_ENROLLMENTS.csv file is completed.')
+        self.extract_pmtct_enrollments()
+        self.logger.info('PMTCT_ENROLLMENTS.csv file is completed.')
 
         self.extract_pmtct_dpi_enrollments()
         self.logger.info('DPI_ENROLLMENTS.csv file is completed.')
