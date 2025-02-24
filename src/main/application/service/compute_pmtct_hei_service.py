@@ -7,6 +7,9 @@ class ComputePmtctHeiService(ComputePmtctHeiUseCase):
 
         for patient in patients_enrolled:
 
+            if str(patient['pcrNumber']) == 'nan':
+                continue
+
             if str(patient['testResult']) == 'nan':
                 continue
 

@@ -7,5 +7,5 @@ class EventPort(ABC):
         pass
 
     @abstractmethod
-    def find_patient_events_by_program_program_stage_unit_and_period(self, program, program_stage, unit, start_date, end_date):
+    def find_index_patient_details_event(self, patient):
         pass

@@ -1,6 +1,6 @@
 from dhis2 import Api
 
-from src.infrastructure.forms import DPI, DPI_STAGE, INDEX, PTV, PTV_STAGE, TB, TB_STAGE, INDEX_CONTACTS_STAGE
+from src.infrastructure.forms import DPI, DPI_STAGE, INDEX, PTV, PTV_STAGE, TB, TB_STAGE, INDEX_CONTACTS_STAGE, INDEX_DETAILS_STAGE
 
 class PatientEventForm:
 
@@ -74,37 +74,32 @@ class PatientEventForm:
 
         return patient_events
     
-    def find_patient_events_by_program_program_stage_unit_and_period(self, program, program_stage, unit, stard_date, end_date):
-        patient_events = self.api.get('tracker/events', params={'skipPaging':True, 'fields':'event, status, program, trackedEntity, orgUnit, occurredAt, dataValues[dataElement,value]', 'program':program, 'programStage':program_stage, 'orgUnit':unit, 'occurredAfter':stard_date, 'occurredBefore':end_date, 'order':'occurredAt:asc'})
+    def find_index_patient_details_event(self, patient):
+        patient_event = self.api.get('tracker/events', params={'pageSize':'1', 'fields':'event, status, program, trackedEntity, orgUnit, occurredAt, dataValues[dataElement,value]', 'program':INDEX, 'programStage':INDEX_DETAILS_STAGE, 'trackedEntity':patient['trackedEntity'], 'orgUnit':patient['orgUnit'], 'order':'occurredAt:asc'})
+        patient_event = patient_event.json()['instances']
 
-        patient_events = patient_events.json()['instances']
+        patient_event = self.remove_duplicates(patient_event)
 
-        patient_events = self.remove_duplicates(patient_events)
-
-        for patient_event in patient_events:
-
+        if len(patient_event) != 0:
+            patient_event = patient_event[0]
             data_values = patient_event['dataValues']
             
             for data_value in data_values:
 
                 # INDEX CASE ACCEPTED TEST CHILDREN LESS THAN 15 YEARS
                 if data_value['dataElement'] == 't63nrRfyPif':
-                    patient_event['childrenLessThan15Years'] = data_value['value']
+                    patient['childrenLessThan15Years'] = data_value['value']
                     continue
 
                 # INDEX CASE ACCEPTED TEST PARTNER
                 if data_value['dataElement'] == 'ZeqMAFjVGul':
-                    patient_event['testPartner'] = data_value['value']
+                    patient['testPartner'] = data_value['value']
                     continue
 
                 # INDEX CASE NUMBER OF CONTACTS
                 if data_value['dataElement'] == 'sKIsOK1xrJK':
-                    patient_event['numberOfContacts'] = data_value['value']
+                    patient['numberOfContacts'] = data_value['value']
                     continue
-
-            del patient_event['dataValues']
-
-        return patient_events
     
     def remove_duplicates(self, events):
         seen = set()
@@ -197,36 +192,39 @@ class PatientEventForm:
             if data_value['dataElement'] == 'R5gf9647vIA':
                 patient['outcome'] =  data_value['value']
 
-    def add_patient_last_dpi_event(self, patient):
-       last_dpi = self.api.get('tracker/events', params={'orgUnit':patient['orgUnit'], 'program':DPI, 'programStage':DPI_STAGE, 'trackedEntity':patient['trackedEntity'], 'fields':'{,trackedEntity,programStage,occurredAt,dataValues=[dataElement,value]}', 'order':'occurredAt:desc', 'pageSize':'1'})
-       last_dpi = last_dpi.json()['instances']
+    def add_patient_dpi_event(self, patient, start_period, end_period):
+        # DPI SAMPLE COLLECTION DATE
+        DPI_SAMPLE_COLLECTION_DATE_ID = 'ay27cysj8lj'
 
-       if len(last_dpi) != 0:
-           data_values = last_dpi[0]['dataValues']
+        last_dpi = self.api.get('tracker/events', params=[('orgUnit',patient['orgUnit']), ('program', DPI), ('programStage', DPI_STAGE), ('trackedEntity', patient['trackedEntity']), ('fields','{,trackedEntity,programStage,occurredAt,dataValues=[dataElement,value]}'), ('filter',f'{DPI_SAMPLE_COLLECTION_DATE_ID}:GE:{start_period}'), ('filter',f'{DPI_SAMPLE_COLLECTION_DATE_ID}:LE:{end_period}'), ('pageSize','1')])
+        last_dpi = last_dpi.json()['instances']
 
-           patient['testDate'] = last_dpi[0]['occurredAt'].split('T')[0]
+        if len(last_dpi) != 0:
+            data_values = last_dpi[0]['dataValues']
 
-           for data_value in data_values:
-               
-               # DPI CHILD EXPOSED
-               if data_value['dataElement'] == 'MGIuReFLpqs':
-                   patient['exposed'] =  data_value['value'] 
+            patient['testDate'] = last_dpi[0]['occurredAt'].split('T')[0]
 
-               # DPI PCR NUMBER
-               if data_value['dataElement'] == 'ibcg89iMWHN':
-                   patient['pcrNumber'] =  data_value['value'] 
+            for data_value in data_values:
+                
+                # DPI CHILD EXPOSED
+                if data_value['dataElement'] == 'MGIuReFLpqs':
+                    patient['exposed'] =  data_value['value'] 
 
-               # DPI PCR RESULT
-               if data_value['dataElement'] == 'RTgqf4cyKpK':
-                   patient['testResult'] =  data_value['value'] 
+                # DPI PCR NUMBER
+                if data_value['dataElement'] == 'ibcg89iMWHN':
+                    patient['pcrNumber'] =  data_value['value'] 
 
-               # DPI ART START DATE
-               if data_value['dataElement'] == 'F8UJoKnqf9k':
-                   patient['artStartDate'] =  data_value['value']
+                # DPI PCR RESULT
+                if data_value['dataElement'] == 'RTgqf4cyKpK':
+                    patient['testResult'] =  data_value['value'] 
 
-               # DPI OUTCOME
-               if data_value['dataElement'] == 'WWEtp1FCi70':
-                   patient['outcome'] =  data_value['value']
+                # DPI ART START DATE
+                if data_value['dataElement'] == 'F8UJoKnqf9k':
+                    patient['artStartDate'] =  data_value['value']
+
+                # DPI OUTCOME
+                if data_value['dataElement'] == 'WWEtp1FCi70':
+                    patient['outcome'] =  data_value['value']
 
     def find_index_contacts_by_unit_and_period(self, unit, start_date, end_date):
         TEST_DATE_ID = 'u4P9Vo7xnBi'

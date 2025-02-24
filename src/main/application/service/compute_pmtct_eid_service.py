@@ -7,9 +7,9 @@ class ComputePmtctEidService(ComputePmtctEidUseCase):
 
         for patient in patients_enrolled:
 
-            if str(patient['testResult']) == 'nan':
+            if str(patient['pcrNumber']) == 'nan':
                 continue
-
+            
             patients.append(patient)
 
         return patients

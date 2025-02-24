@@ -84,7 +84,7 @@ class PmtctResource:
             org_unit = org_unit['id']
 
             #get all patient enrollments
-            patients_enrolled = self.api.get('tracker/enrollments', params={'orgUnit':org_unit, 'skipPaging':'true', 'program': DPI, 'fields':'{,enrollment, enrolledAt, orgUnit, trackedEntity, program, status,}', 'enrolledAfter':f'{self.start_period}', 'enrolledBefore':f'{self.end_period}', 'order':'enrolledAt:asc'})
+            patients_enrolled = self.api.get('tracker/enrollments', params={'orgUnit':org_unit, 'skipPaging':'true', 'program': DPI, 'fields':'{,enrollment, enrolledAt, orgUnit, trackedEntity, program, status,}', 'order':'enrolledAt:asc'})
             patients_enrolled = patients_enrolled.json()['instances']
 
             self.logger.info(f"Processing the facility: {org_unit}, a total of {len(patients_enrolled)} enrolled patient(s)")
@@ -94,7 +94,7 @@ class PmtctResource:
             for patient_enrolled in patients_enrolled:
 
                 patient_demographics.add_demographics(patient_enrolled)
-                patient_events.add_patient_last_dpi_event(patient_enrolled)
+                patient_events.add_patient_dpi_event(patient_enrolled, self.start_period, self.end_period)
 
                 self.logger.info(f"From {len (patients_enrolled)} patients enrolled, {counter} (is) are ready to be processed.")
                 counter = counter + 1 
@@ -163,8 +163,8 @@ class PmtctResource:
     
 
     def run(self):
-        self.extract_pmtct_enrollments()
-        self.logger.info('PMTCT_ENROLLMENTS.csv file is completed.')
+        # self.extract_pmtct_enrollments()
+        # self.logger.info('PMTCT_ENROLLMENTS.csv file is completed.')
 
         self.extract_pmtct_dpi_enrollments()
         self.logger.info('DPI_ENROLLMENTS.csv file is completed.')

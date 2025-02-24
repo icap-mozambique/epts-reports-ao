@@ -4,7 +4,6 @@ from src.infrastructure.adapters import IndexCaseAcceptedIndicatorMetadataAdapte
 from src.infrastructure.adapters import IndexCaseContactsNumberIndicatorMetadataAdapter
 from src.infrastructure.adapters import IndexCaseIndicatorMetadataAdapter
 from src.infrastructure.adapters import IndexCaseOfferedIndicatorMetadataAdapter
-from src.infrastructure.forms import INDEX_CONTACTS_STAGE
 from src.main.application.income import ComputeHtsIndexCaseAcceptedDisaggregationUseCase
 from src.main.application.income import ComputeHtsIndexCaseContactsNumberDisaggregationUseCase
 from src.main.application.income import ComputeHtsIndexCaseDisaggregationUseCase
@@ -19,7 +18,7 @@ from src.main.application.service import ComputeHtsIndexCaseOfferedDisaggregatio
 from src.main.application.service import ComputeHtsIndexCaseService
 from src.infrastructure.forms import PatientDemographicForm
 from src.infrastructure.forms import PatientEventForm
-from src.infrastructure.forms import INDEX, INDEX_DETAILS_STAGE
+from src.infrastructure.forms import INDEX
 
 class HtsIndexResource:
 
@@ -38,6 +37,7 @@ class HtsIndexResource:
 
         # Load patients envents
         patient_demographics = PatientDemographicForm(self.api)
+        patient_event_port = PatientEventForm(self.api)
 
         for org_unit in self.org_units:
 
@@ -53,6 +53,7 @@ class HtsIndexResource:
 
             for patient_enrolled in patients_enrolled:
                 patient_demographics.add_demographics(patient_enrolled)
+                patient_event_port.find_index_patient_details_event(patient_enrolled)
 
                 self.logger.info(f"From {len (patients_enrolled)} patietnts enrolled, {counter} (is) are ready to be processed.")
                 counter = counter + 1 
