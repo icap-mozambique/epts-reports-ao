@@ -24,11 +24,11 @@ password = credentials['password']
 url = 'https://dhis-ao.icap.columbia.edu'
 
 # period of analysis
-start_period = '2024-10-01'
-end_period = '2024-12-31'
-period = '2024Q4'
+start_period = '2025-01-01'
+end_period = '2025-03-31'
+period = '2025Q1'
 units_group = 'gH2DlwAo1ja'
-semi_annual_period = '2024AprilS1'
+semi_annual_period = '2024OctS2'
 annual_period = '2023Oct'
 
 @app.get('/')
