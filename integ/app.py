@@ -28,7 +28,7 @@ start_period = '2025-01-01'
 end_period = '2025-03-31'
 period = '2025Q1'
 units_group = 'gH2DlwAo1ja'
-semi_annual_period = '2024OctS2'
+semi_annual_period = '2024AprilS2'
 annual_period = '2023Oct'
 
 @app.get('/')
