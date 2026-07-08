@@ -24,12 +24,12 @@ password = credentials['password']
 url = 'https://dhis-ao.icap.columbia.edu'
 
 # period of analysis
-start_period = '2025-01-01'
-end_period = '2025-03-31'
-period = '2025Q1'
+start_period = '2026-01-01'
+end_period = '2026-03-31'
+period = '2026Q1'
 units_group = 'gH2DlwAo1ja'
-semi_annual_period = '2024AprilS2'
-annual_period = '2023Oct'
+semi_annual_period = '2025AprilS2'
+annual_period = '2024Oct'
 
 @app.get('/')
 async def root():
