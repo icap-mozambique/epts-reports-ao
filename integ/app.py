@@ -24,9 +24,9 @@ password = credentials['password']
 url = 'https://dhis-ao.icap.columbia.edu'
 
 # period of analysis
-start_period = '2026-01-01'
-end_period = '2026-03-31'
-period = '2026Q1'
+start_period = '2025-10-01'
+end_period = '2025-12-31'
+period = '2025Q4'
 units_group = 'gH2DlwAo1ja'
 semi_annual_period = '2025AprilS2'
 annual_period = '2024Oct'
