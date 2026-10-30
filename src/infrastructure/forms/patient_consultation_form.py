@@ -1,4 +1,5 @@
 
+import pandas as pd
 from src.infrastructure.forms import CARE_AND_TREATMENT
 
 class PatientConsultationForm:
@@ -54,3 +55,41 @@ class PatientConsultationForm:
                 # Breastfeeding
                 if data['dataElement'] == 'pnwHXKiDPD9':
                     patient['breastfeeding'] = data['value']
+
+    def add_tb_screening_info(self, patient, start_period, end_period):
+        org_unit = patient['orgUnit']
+        patient_id = patient['trackedEntity']
+
+        start_period_three_months_before = pd.to_datetime(start_period) - pd.DateOffset(months=3)
+        start_period_three_months_before = start_period_three_months_before.strftime('%Y-%m-%d')
+        
+        events = self.api.get('tracker/events', params=[('skipPaging',True), ('fields','event, status, program, trackedEntity, orgUnit, occurredAt, dataValues[dataElement,value]'),('trackedEntity', patient_id), ('program', CARE_AND_TREATMENT), ('programStage', self.CONSULTATION_STAGE), ('orgUnit', org_unit), ('filter',f'{self.LAST_CONSULTATION_DATE}:GE:{start_period_three_months_before}'), ('filter', f'{self.LAST_CONSULTATION_DATE}:LE:{end_period}'), ('order', 'occurredAt:asc')])
+        events = events.json()['instances']
+
+        tb_entry_type = ''
+        
+        if events:
+            for event in events:
+                
+                for data in event['dataValues']:
+                    
+                    if tb_entry_type == '' and data['dataElement'] == 'coUpJW0EwSl':
+                        tb_entry_type = data['value']
+                        patient['tb_entry_type'] = tb_entry_type
+                    
+                    # tb screening 
+                    if data['dataElement'] == 'AWiqP7HQTV9':
+                        patient['tb_screened'] = data['value']
+
+                    # type of screening
+                    if data['dataElement'] == 'uw9Y3HL4Qoe':
+                        patient['tb_screening_type'] = data['value']
+                    
+                    # tb status
+                    if data['dataElement'] == 'W2qpMQmbRqq':
+                        patient['tb_status'] = data['value']
+
+                    
+
+                    
+

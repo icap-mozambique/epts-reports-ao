@@ -1,5 +1,11 @@
 import pandas as pd
 
+from src.main.application.service import ComputeTxTbNumeratorDisaggregationService
+from src.main.application.service import ComputeTxTbDenominatorDisaggregationService
+from src.main.application.service import ComputeTxTbNumeratorService
+from src.main.application.service import ComputeTxTbDenominatorService
+from src.infrastructure.adapters import TxTbNumeratorIndicatorMetadataAdapter
+from src.infrastructure.adapters import TxTbDenominatorIndicatorMetadataAdapter
 from src.infrastructure.forms import PatientDemographicForm
 from src.infrastructure.forms import PatientOutcomeForm
 from src.infrastructure.forms import CARE_AND_TREATMENT
@@ -81,6 +87,13 @@ class TxResource:
         self.tx_rtt_service = ComputeTxRttService(self.logger, pharmacy_port, self.tx_curr_service)
         self.tx_rtt_disaggregation_service = ComputeTxRttDisaggregationService(self.logger, tx_rtt_indicator_metadata_port, tx_rtt_itt_indicator_metadata_port)
 
+        tx_tb_denominator_indicator_metadata = TxTbDenominatorIndicatorMetadataAdapter(self.api)
+        tx_tb_numerator_indicator_metadata = TxTbNumeratorIndicatorMetadataAdapter(self.api)
+        self.tx_tb_denominator_use_case = ComputeTxTbDenominatorService()
+        self.tx_tb_numerator_use_case = ComputeTxTbNumeratorService()
+        self.tx_tb_denominator_disaggregation_use_case = ComputeTxTbDenominatorDisaggregationService(tx_tb_denominator_indicator_metadata, self.logger)
+        self.tx_tb_numerator_disaggregation_use_case = ComputeTxTbNumeratorDisaggregationService(tx_tb_numerator_indicator_metadata, self.logger)
+
 
     def extract_tx_enrollments(self):
         enrollments = pd.DataFrame(columns=['enrollment', 'trackedEntity', 'program', 'status', 'orgUnit', 'enrolledAt', 'patientIdentifier', 'patientAge', 'patientSex','patientName', 
@@ -124,6 +137,8 @@ class TxResource:
 
                 patient_consultation.add_patient_pregnant_or_breastfeeding_status(patient_enrolled, self.end_period)
 
+                patient_consultation.add_tb_screening_info(patient_enrolled, self.start_period, self.end_period)
+
                 self.logger.info(f"From {len (patients_enrolled)} patients enrolled, {counter} (is) are ready to be processed.")
                 counter = counter + 1 
 
@@ -156,7 +171,13 @@ class TxResource:
         tx_rtt_patients = self.tx_rtt_service.compute(enrollments, start_period, end_period)
         tx_rtt_patients_disaggregation = self.tx_rtt_disaggregation_service.compute(tx_rtt_patients, end_period)
 
-        combination = tx_curr_patients_disaggregation + tx_new_patients_disaggregation + tx_ml_patients_disaggregation + tx_pvls_denominator_patients_disaggregation + tx_pvls_numerator_patients_disaggregation + tx_rtt_patients_disaggregation
+        tx_tb_denominator_patients = self.tx_tb_denominator_use_case.compute(enrollments)
+        tx_tb_denominator_patients_disaggregation = self.tx_tb_denominator_disaggregation_use_case.compute(tx_tb_denominator_patients, end_period)
+
+        tx_tb_numerator_patients = self.tx_tb_numerator_use_case.compute(enrollments)
+        tx_tb_numerator_patients_disaggregation = self.tx_tb_numerator_disaggregation_use_case.compute(tx_tb_numerator_patients, end_period)
+
+        combination = tx_curr_patients_disaggregation + tx_new_patients_disaggregation + tx_ml_patients_disaggregation + tx_pvls_denominator_patients_disaggregation + tx_pvls_numerator_patients_disaggregation + tx_rtt_patients_disaggregation + tx_tb_denominator_patients_disaggregation + tx_tb_numerator_patients_disaggregation
 
         if combination:
             # extract data
